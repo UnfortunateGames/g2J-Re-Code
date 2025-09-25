@@ -1,4 +1,5 @@
-"""Import Backend Classes"""
+"""Import Backend Classes and randint function"""
+from random import randint
 import backend.__classes__ as BEC
 
 # Do I really have to explain this to you?
@@ -36,13 +37,90 @@ praise_me: BEC.Task = BEC.Task(
     drain=[0, 4]
 )
 
+# ! I plan to make this a special task
+# ! that if the player eats an animal
+# ! it will fail automatically
+# ! and if the player does not eat an animal until the next day
+# ! it will be completed automatically
+# ! This needs a special use-case in __main__.py
+dont_eat: BEC.Task = BEC.Task(
+    name="Don't Eat",
+    dialogue=[
+        "You must Resist the temptation.",
+        "Do not eat the animals.",
+    ],
+    guide=[
+        "Go to the plains.",
+        "There are animalss there.",
+        "Don't eat them."
+    ],
+    prize=3,
+    location=[2, 1],
+    drain=[3, 6]
+)
 
+# ! This needs a special use-case in __main__.py
+# ! Temporarily a normal task for now
+sacrifice: BEC.Task = BEC.Task(
+    name="Sacrifice",
+    dialogue=[
+        "Give me goats.",
+        "Their blood, my creation."
+    ],
+    guide=[
+        "Go to the cliff.",
+        "Bring me a goat.",
+        "Sacrfice it."
+    ],
+    prize=6,
+    location=[3, 0],
+    drain=[0, 4]
+)
+
+baptism: BEC.Task = BEC.Task(
+    name="Baptism",
+    dialogue=[
+        "You must be cleansed.",
+        "Baptism is the way."
+    ],
+    guide=[
+        "Go to the lake.",
+        "Baptise yourself."
+    ],
+    prize=2,
+    location=[1, 1],
+    drain=[0, 6]
+)
+
+celebrate: BEC.Task = BEC.Task(
+    name="Celebrate",
+    dialogue=[
+        "Rejoice in my world.",
+        "Hallelujah!"
+    ],
+    guide=[
+        "Go to your camp.",
+        "Celebrate with me."
+    ],
+    prize=1,
+    location=[1, 0],
+    drain=[0, 4]
+)
+
+# Holy Water Creation Task Soon (Special Task)
+
+# - UNIMPLEMENTED CLASSES - (until 0.3.1)
+
+# Weapons
+# Items
+# Inventory
+# Locations (Map)
 
 # - STATIC ENEMY VALUES -
 
 cow_enemy: BEC.Animal = BEC.Animal(
     name="Cow",
-    moveSet={
+    move_set={
         "Instincts.",
         BEC.Move("Ram", 0, 4, 0),
         BEC.Move("Rest", 1, 8, 1),
@@ -55,7 +133,7 @@ cow_enemy: BEC.Animal = BEC.Animal(
 
 sheep_enemy: BEC.Animal = BEC.Animal(
     name="Cow",
-    moveSet={
+    move_set={
         "Instincts.",
         BEC.Move("Ram", 0, 2, 0),
         BEC.Move("Rest", 1, 8, 0),
@@ -68,7 +146,7 @@ sheep_enemy: BEC.Animal = BEC.Animal(
 
 goat_enemy: BEC.Animal = BEC.Animal(
     name="Goat",
-    moveSet={
+    move_set={
         "Instincts.",
         BEC.Move("Kick", 0, 6, 1),
         BEC.Move("Preperation", 1, 6, 0),
@@ -89,7 +167,7 @@ newbie_stats: BEC.Character = BEC.Character(
     description="My first creation.",
     price=0,
     index=0,
-    moveSet={
+    move_set={
         "Instincts.",
         BEC.Move("Punch", 0, 2, 0),
         BEC.Move("Kick", 0, 3, 1),
@@ -105,7 +183,7 @@ expert_stats: BEC.Character = BEC.Character(
     description="Long forgotten.",
     price=10,
     index=1,
-    moveSet={
+    move_set={
         "Kung Fu.",
         BEC.Move("Fist Hit", 0, 3, 0),
         BEC.Move("Spin Kick", 0, 5, 1),
@@ -121,7 +199,7 @@ sustainer_stats: BEC.Character = BEC.Character(
     description="Gluttony.",
     price=15,
     index=2,
-    moveSet={
+    move_set={
         "Sumo.",
         BEC.Move("Crush", 0, 3, 0),
         BEC.Move("Smash", 0, 5, 1),
@@ -137,7 +215,7 @@ fallen_stats: BEC.Character = BEC.Character(
     description="Im sorry angel.",
     price=30,
     index=3,
-    moveSet={
+    move_set={
         "Divine Power.",
         BEC.Move("Divine Bolt", 0, 6, 0),
         BEC.Move("Holy Smite", 0, 18, 1),
@@ -155,6 +233,7 @@ badges: int = 0
 cur_stats: BEC.Character = newbie_stats
 
 cur_location: list = [0, 0]
+cur_animal: BEC.Animal = None
 cur_task: BEC.Task = None
 
 game_time: int = 0
@@ -191,6 +270,24 @@ def check_death() -> int:
         return 2
     return 0
 
+def return_task() -> BEC.Task:
+    """
+    This will return a task at random
+
+    It creates a list "task_list"
+    And returns a Task from that list
+    at index randint(0, length of task_list)
+    """
+    task_list = [
+        chop_trees,
+        praise_me,
+        dont_eat,
+        sacrifice,
+        baptism,
+        celebrate
+    ]
+    return task_list[randint(0, len(task_list) - 1)]
+
 # - UPDATE FUNCTIONS -
 
 def update_time_values(time: int, what: str, sleep: bool) -> list:
@@ -204,32 +301,121 @@ def update_time_values(time: int, what: str, sleep: bool) -> list:
     0 = Do not degrade stats with cur_stats.stats.drain()
     1 = Do drain stats with cur_stats.stats.drain()
     """
-    time = time % 4
+    ctime = time % 4
     if time == 0:
-        return [time, None, None, 0]
+        return [ctime, None, None, 0]
     if time > 12:
         time = 0
         what = "Day" if what == "Night" else "Night"
         sleep = False if sleep is True else False
-        return time, time, sleep, 0
+        return [ctime, what, sleep, 0]
     if time == 0:
-        return [time, None, None, 1]
+        return [ctime, None, None, 1]
     return 0
 
-# def mvGTime(amount: int = 1) -> None:
-#     global GTime, WTime
-#     if amount == 0:
-#         GTime -= 4
-#         if GTime < 0:
-#             GTime += 12
-#         elif GTime > 12:
-#             GTime -= 12
-#         WTime = "Day"
-#         updTVal()
-#         # initVar()
-#         curStats.stats.heal()
-#         return
-#     GTime += amount
-#     x = updTVal()
-#     if x == 0:
-#         curStats.stats.damage()
+def move_game_time(
+        amount: int = 1, time: int = None, what: str = None,
+        sleep: bool = None
+    ) -> list:
+    """
+    The main function to move game time
+
+    This returns a list of structure:
+    [cur_time, what_time]
+
+    If parameter amount is 0
+    It will move time back 4 hours to emulate sleep
+    and heal the player in the process
+
+    Else it will move time forward by a specified amount
+    And invokes the update_time_values() function to update time variables
+    
+    If the return_value is 0, it will invoke cur_stats.stats.damage()
+    to degrade the player's stats
+    """
+    if amount == 0:
+        time -= 4
+        if time < 0:
+            time += 12
+        elif time > 12:
+            time -= 12
+        what = "Day" if what == "Night" else "Night"
+        x = update_time_values(time, what, sleep)
+        time = x[0]
+        what = x[1]
+        sleep = x[2]
+        cur_stats.stats.heal()
+        return [time, what]
+    time += amount
+    x = update_time_values(time, what, False)
+    if x[3] == 0:
+        cur_stats.stats.damage()
+        return [time, what]
+
+def initialize_variables() -> list:
+    """
+    Initializes all dynamic backend variables
+
+    To reduce the use of the global keyword
+    It returns a list of structure:
+    [
+    chance of animal,
+    animal type,
+    all false values,
+    all true values,
+    return task,
+    all 0 variables
+    ]
+
+    This is to be unpacked in __main__.py
+    """
+    return [
+        randint(0, 10),
+        randint(0, 2),
+        False,
+        True,
+        return_task(),
+        0
+    ]
+
+# - SAVE FILE SHENANIGANS -
+
+def save_game() -> None:
+    """
+    This saves the game to a file named "__save__.txt"
+    Located in backend/saveFile
+
+    It saves all essential backend variables
+    In a structure that follows below:
+    ...
+
+    If file does not exist a failsafe is incurred
+    and will create the file then repeat the process
+
+    If a known error occurs
+    It raises the error to be handled in __main__.py
+    To continue the game without saving
+
+    Else if an unknown error occurs
+    It raises the error for the python interpreter to handle
+    """
+    try:
+        pass
+    except Exception as e:
+        raise e
+
+
+def load_game() -> None:
+    """
+    This loads the game from a file named "__save__.txt"
+    Located in backend/saveFile
+
+    It loads all essential backend variables
+
+    If it fails no failsafe is incurred
+    and raises the error for the python interpreter to handle
+    """
+    try:
+        pass
+    except Exception as e:
+        raise e

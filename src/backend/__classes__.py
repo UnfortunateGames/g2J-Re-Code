@@ -1,5 +1,5 @@
 """Import randint from module random"""
-from random import randint as rng
+from random import randint
 
 # Goodluck.
 
@@ -127,34 +127,90 @@ class Move:
     """
     A Battle Move class.
 
+    ? This one too! It's small!
 
+    Initializer seems complex.
+    It accepts 4 parameters:
+    name = The name of the move
+    mode = 0 for damage, 1 for heal
+    damage_or_heal = The amount of damage or heal
+    cooldown = The amount of turns before it can be used again
+    
+    It also has a cur_cooldown variable to hold the current cooldown.
     """
     def __init__(
         self, name: str, mode: int,
-        damageORheal: int, cooldown: int
+        damage_or_heal: int, cooldown: int
         ) -> None:
         self.name = name
         self.mode = mode
-        self.damageORheal = damageORheal
+        self.damage_or_heal = damage_or_heal
         self.cooldown = cooldown
-        self.curCooldown = 0
+        self.cur_cooldown = 0
     # Do move function
     def do(self, stats: Stats, itself: Stats):
+        """
+        This is the logic for the move.
+
+        It checks if it's mode is either 1 or 0.
+        If it's 1, it heals the user by invoking the heal function
+        given by the itself parameter.
+        If it's 0, it damages the opponent by invoking the damage function
+        given by the stats parameter.
+        """
         if self.mode == 1:
-            itself.curHealth += self.damageORheal
-            self.curCooldown = self.cooldown
+            itself.curHealth += self.damage_or_heal
+            self.cur_cooldown = self.cooldown
             return
-        stats.curHealth -= self.damageORheal
-        self.curCooldown = self.cooldown
+        stats.curHealth -= self.damage_or_heal
+        self.cur_cooldown = self.cooldown
 
-class MoveSet: # A set of class moves
-    pass
+class MoveSet:
+    """
+    This class will contain 3 move classes
 
-class Character: # Standard character class
+    Initializer will only contain one parameter:
+    moves = A list of 3 move classes
+    """
+    def __init__(self, moves: list) -> None:
+        self.moves = moves
+    def next_move(self) -> None:
+        """
+        This uses a for loop to iterate through the moves
+        and decrease their cooldown by 1 if they are above 0.
+
+        ? Is this efficient?
+        """
+        for move in self.moves:
+            move.cur_cooldown -= 1 if move.cur_cooldown > 0 else 0
+
+class Character:
+    """
+    The Character class.
+
+    This class holds the logic for your characters.
+
+    Initializer is fairly self explanatory.
+    It accepts several parameters:
+    stats = The stats class holder
+    name = The name of the character
+    head = The head sprite of the character
+    body = The body sprite of the character
+    description = The description of the character
+    price = The price of the character
+    index = The index of the character in the boughtCharacters list
+    move_set = The move set class holder
+
+    This heavily relies on functions managing it.
+    It will only contain 1 function:
+    It's buy function.
+
+    Any other modifications require direct access.
+    """
     def __init__(
         self, stats: Stats, name: str,
         head: str, body: str, description: str,
-        price: int, index: int, moveSet: MoveSet
+        price: int, index: int, move_set: MoveSet
         ) -> None:
         self.stats = stats
         self.name = name
@@ -163,34 +219,59 @@ class Character: # Standard character class
         self.description = description
         self.price = price
         self.index = index
-        self.moveSet = moveSet
-    # Buy selected Character
-    def buy(self) -> None:
-        global boughtCharacters, badges
-        # Decrease badges by rpice
-        badges -= self.price
-        # Set it's bought value to true
-        boughtCharacters[self.index] = True
-    # Equip selected Characetr
-    def equip(self) -> None:
-        global curCharacter, curStats
-        # Set Character Variable to character's name
-        curCharacter = self.name
-        # Set current stats to the class holder
-        curStats = self
+        self.move_set = move_set
+    def buy(self, badges, bought) -> None:
+        """
+        The buy function checks if the player has enough badges
+        and if the character is already bought.
 
-class Animal: # The standard enemy class
+        Return Value is [bought?, remaining_badges]
+
+        If conditions are unmet it will return [False, badges].
+        Else it will return [True, badges - price].
+        """
+        if badges < self.price or bought[self.index] is True:
+            return [False, badges]
+        return [True, badges - self.price]
+
+class Animal:
+    """
+    The Animal Class.
+
+    This class holds the simple logic for animals.
+    It serves as a simple enemy.
+
+    Initializer has only 5 Parameters:
+    name = The name of the animal
+    move_set = The move set class holder
+    stats = The stats class holder
+    prize = The amount of badges given when defeated
+    meat = The amount of meat given when defeated
+
+    Note that prize and meat are stored in a list.
+
+    ! I will add more battle features for more variety later!
+    """
     def __init__(
-        self, name: str, moveSet: MoveSet,
+        self, name: str, move_set: MoveSet,
         stats: Stats, prize: int, meat: int
         ) -> None:
         self.name = name
-        self.moveSet = moveSet
+        self.move_set = move_set
         self.stats = stats
-        self.prize = prize
+        self.prize = [prize, meat]
     # Choice algorithm
     def choice(self) -> Move:
-        y = self.moveSet.moves[rng(0, 2)].curCooldown
+        """
+        Will return a random move that is not on cooldown.
+
+        It uses the randint function imported from the random module.
+        No cases for if all moves are on cooldown.
+        Since atleast ONE move has no cooldown
+
+        ! I should refactor this
+        """
+        y = self.move_set.moves[randint(0, 2)].curCooldown
         while y != 0:
-            y = self.moveSet.moves[rng(0, 2)].curCooldown
+            y = self.move_set.moves[randint(0, 2)].curCooldown
         return y
