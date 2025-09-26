@@ -1,5 +1,6 @@
 """Import Backend Classes and randint function"""
 from random import randint
+from time import strftime, localtime
 import backend.__classes__ as BEC
 
 # Do I really have to explain this to you?
@@ -239,14 +240,70 @@ cur_task: BEC.Task = None
 game_time: int = 0
 cur_time: int = 0
 what_time: str = "Day"
-
 can_sleep: bool = False
+
 done_task: bool = False
 heard_task: bool = False
 animal_exists: bool = False
 can_wait: bool = True
 
 deaths: int = 0
+
+class KeybindContainer:
+    """
+    This is a container holding the keybinds
+    of the game.
+
+    Yes it moved to backend from main.
+    """
+    leftKB = "left"
+    rightKB = "right"
+    upKB = "up"
+    downKB = "down"
+    taskKB = "task"
+    actsKB = "acts"
+    bagKB = "bag"
+    checkKB = "check"
+    askKB = "ask"
+    waitKB = "wait"
+    sleepKB = "sleep"
+    getKB = "get"
+    menuKB = "menu"
+    backKB = "back"
+    KBList = [
+        leftKB, rightKB, upKB,
+        downKB, taskKB, actsKB,
+        bagKB, checkKB, askKB,
+        waitKB, sleepKB, getKB,
+        menuKB, backKB
+    ]
+
+# - DEBUGGING -
+
+def write_log(message: str = "(?) Log called but no messages") -> None:
+    """
+    This writes to a log file in backend/logFile/log.txt
+
+    I will refactor the log to be more readable in the next patch
+
+    It follows this structure:
+    [time] - (type) message
+    for example:
+    [12:00:00] - (FATAL) unknown error saving game
+    or
+    [12:00:00] - (not fatal) Save File not found, creating
+
+    and for attempts to a try except
+    [12:00:00] - (attempt) Saving Game...
+    """
+    try:
+        with open("src/backend/logFile/__log__.txt", "a", encoding="utf-8") as file:
+            file.write(f"[{strftime("%H:%M:%S", localtime())}] - {message}\n")
+    except FileNotFoundError:
+        open("src/backend/logFile/__log__.txt", "x", encoding="utf-8").close()
+        write_log(message)
+    except Exception as e:
+        raise e
 
 # - IF RETURN -
 
@@ -359,23 +416,15 @@ def initialize_variables() -> list:
     To reduce the use of the global keyword
     It returns a list of structure:
     [
-    chance of animal,
-    animal type,
-    all false values,
-    all true values,
-    return task,
-    all 0 variables
+    chance of animal, animal type, all false values,
+    all true values, return task, all 0 variables
     ]
 
     This is to be unpacked in __main__.py
     """
     return [
-        randint(0, 10),
-        randint(0, 2),
-        False,
-        True,
-        return_task(),
-        0
+        randint(0, 10), randint(0, 2), False,
+        True, return_task(), 0
     ]
 
 # - SAVE FILE SHENANIGANS -
@@ -387,7 +436,20 @@ def save_game() -> None:
 
     It saves all essential backend variables
     In a structure that follows below:
-    ...
+    keybinds...
+    bought characters...
+    badges
+    cur stats index
+    name
+    cur stats current health
+    cur stats current stamina
+    cur location x
+    cur location y
+    cur task
+    game time
+    done task
+    animal exists
+    deaths
 
     If file does not exist a failsafe is incurred
     and will create the file then repeat the process
@@ -400,22 +462,76 @@ def save_game() -> None:
     It raises the error for the python interpreter to handle
     """
     try:
-        pass
+        write_log("(Attempt) Saving Game...")
+        with open("backend/saveFile/__save__.txt", "w", encoding="utf-8") as file:
+            for x in KeybindContainer.KBList:
+                file.write(f"{x}\n")
+            for x in bought_characters:
+                file.write(f"{x}\n")
+            file.write(f"{badges}\n")
+            file.write(f"{cur_stats.index}\n")
+            file.write(f"{cur_stats.name}\n")
+            file.write(f"{cur_stats.stats.curHealth}\n")
+            file.write(f"{cur_stats.stats.curStamina}\n")
+            file.write(f"{cur_location[0]}\n")
+            file.write(f"{cur_location[1]}\n")
+            file.write(f"{cur_task}\n")
+            file.write(f"{game_time}\n")
+            file.write(f"{done_task}\n")
+            file.write(f"{animal_exists}\n")
+            file.write(f"{deaths}\n")
+    except FileNotFoundError:
+        write_log("(Not Fatal) Save File not found, creating new file")
+        open("src/backend/saveFile/__save__.txt", "x", encoding="utf-8").close()
+        save_game()
     except Exception as e:
+        write_log("(FATAL) Unknown error saving game")
         raise e
 
-
-def load_game() -> None:
+def load_game() -> list:
     """
     This loads the game from a file named "__save__.txt"
     Located in backend/saveFile
 
     It loads all essential backend variables
-
+    Read the save_game function DOCSTRING for the structure
+    
     If it fails no failsafe is incurred
     and raises the error for the python interpreter to handle
+
+    It will return a list of structure:
+    [bought characters, badges, cur location x,
+    cur location y, cur task, game time,
+    done task, animal exists, deaths]
+
+    This saves a global statement
+    and it is to be unpacked in __main__.py
     """
     try:
-        pass
+        write_log("(Attempt) Loading Game...")
+        file_bought_characters: list = []
+        with open("src/backend/saveFile/__save__.txt", "r", encoding="utf-8") as file:
+            lines = file.readlines()
+            for i in range(14):
+                setattr(KeybindContainer, KeybindContainer.KBList[i], lines[i].strip())
+            for i in range(4):
+                file_bought_characters[i] = lines[i + 14].strip() == "True"
+            file_badges = int(lines[17].strip())
+            cur_stats.index = int(lines[18].strip())
+            cur_stats.name = lines[19].strip()
+            cur_stats.stats.curHealth = int(lines[20].strip())
+            cur_stats.stats.curStamina = int(lines[21].strip())
+            file_location = [int(lines[22].strip()), int(lines[23].strip())]
+            file_cur_task = lines[24].strip()
+            file_game_time = int(lines[25].strip())
+            file_done_task = lines[26].strip() == "True"
+            file_animal_exists = lines[27].strip() == "True"
+            file_deaths = int(lines[28].strip())
+            return [
+                file_bought_characters, file_badges, file_location[0],
+                file_location[1], file_cur_task, file_game_time,
+                file_done_task, file_animal_exists, file_deaths
+            ]
     except Exception as e:
+        write_log("(FATAL) Unknown error loading game")
         raise e
