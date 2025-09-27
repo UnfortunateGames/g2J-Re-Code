@@ -1,5 +1,4 @@
-"""Import from all modules"""
-# import backend.__backend__ as BE
+"""The main function of g2J-Recode"""
 
 if __name__ == "__main__":
     pass

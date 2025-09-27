@@ -1,4 +1,4 @@
-"""Import Backend Classes and randint function"""
+"""The backend, containing all the in game variables and logic"""
 from random import randint
 from time import strftime, localtime
 import backend.__classes__ as BEC
@@ -107,6 +107,11 @@ celebrate: BEC.Task = BEC.Task(
     location=[1, 0],
     drain=[0, 4]
 )
+
+task_list: list = [
+    chop_trees, praise_me, dont_eat,
+    sacrifice, baptism, celebrate
+]
 
 # Holy Water Creation Task Soon (Special Task)
 
@@ -249,25 +254,30 @@ can_wait: bool = True
 
 deaths: int = 0
 
-class KeybindContainer:
+class oldKeybindContainer:
     """
     This is a container holding the keybinds
     of the game.
 
     Yes it moved to backend from main.
     """
+    # Main
+    moveKB = "move"
+    actsKB = "acts"
+    taskKB = "task"
+    waitKB = "wait"
+    bagKB = "bag"
+    # Move
     leftKB = "left"
     rightKB = "right"
     upKB = "up"
     downKB = "down"
-    taskKB = "task"
-    actsKB = "acts"
-    bagKB = "bag"
-    checkKB = "check"
+    # Acts
     askKB = "ask"
-    waitKB = "wait"
     sleepKB = "sleep"
+    checkKB = "check"
     getKB = "get"
+    # Misc
     menuKB = "menu"
     backKB = "back"
     KBList = [
@@ -277,6 +287,13 @@ class KeybindContainer:
         waitKB, sleepKB, getKB,
         menuKB, backKB
     ]
+
+keybind_list: list = [
+    ["move", "acts", "task", "wait", "bag"],
+    ["left", "right", "up", "down"],
+    ["ask", "sleep", "check", "get"],
+    ["menu", "back"]
+]
 
 # - DEBUGGING -
 
@@ -335,14 +352,6 @@ def return_task() -> BEC.Task:
     And returns a Task from that list
     at index randint(0, length of task_list)
     """
-    task_list = [
-        chop_trees,
-        praise_me,
-        dont_eat,
-        sacrifice,
-        baptism,
-        celebrate
-    ]
     return task_list[randint(0, len(task_list) - 1)]
 
 # - UPDATE FUNCTIONS -
@@ -464,8 +473,9 @@ def save_game() -> None:
     try:
         write_log("(Attempt) Saving Game...")
         with open("backend/saveFile/__save__.txt", "w", encoding="utf-8") as file:
-            for x in KeybindContainer.KBList:
-                file.write(f"{x}\n")
+            for x in enumerate(keybind_list):
+                for y in enumerate(keybind_list[x]):
+                    file.write(f"{keybind_list[x][y]}\n")
             for x in bought_characters:
                 file.write(f"{x}\n")
             file.write(f"{badges}\n")
@@ -485,7 +495,7 @@ def save_game() -> None:
         open("src/backend/saveFile/__save__.txt", "x", encoding="utf-8").close()
         save_game()
     except Exception as e:
-        write_log("(FATAL) Unknown error saving game")
+        write_log("(FATAL) Unknown error saving game with exit code: " + e)
         raise e
 
 def load_game() -> list:
@@ -502,7 +512,8 @@ def load_game() -> list:
     It will return a list of structure:
     [bought characters, badges, cur location x,
     cur location y, cur task, game time,
-    done task, animal exists, deaths]
+    done task, animal exists, deaths,
+    kb_list]
 
     This saves a global statement
     and it is to be unpacked in __main__.py
@@ -510,12 +521,17 @@ def load_game() -> list:
     try:
         write_log("(Attempt) Loading Game...")
         file_bought_characters: list = []
+        i = 0
+        kb_list = []
         with open("src/backend/saveFile/__save__.txt", "r", encoding="utf-8") as file:
             lines = file.readlines()
-            for i in range(14):
-                setattr(KeybindContainer, KeybindContainer.KBList[i], lines[i].strip())
-            for i in range(4):
-                file_bought_characters[i] = lines[i + 14].strip() == "True"
+            for x in enumerate(keybind_list):
+                kb_list.append([])
+                for y in enumerate(keybind_list[x]):
+                    kb_list[x][y] = lines[i]
+                    i += 1
+            for z in range(4):
+                file_bought_characters[z] = lines[z + 14].strip() == "True"
             file_badges = int(lines[17].strip())
             cur_stats.index = int(lines[18].strip())
             cur_stats.name = lines[19].strip()
@@ -530,8 +546,9 @@ def load_game() -> list:
             return [
                 file_bought_characters, file_badges, file_location[0],
                 file_location[1], file_cur_task, file_game_time,
-                file_done_task, file_animal_exists, file_deaths
+                file_done_task, file_animal_exists, file_deaths,
+                kb_list
             ]
     except Exception as e:
-        write_log("(FATAL) Unknown error loading game")
+        write_log("(FATAL) Unknown error loading game with exit code: " + e)
         raise e

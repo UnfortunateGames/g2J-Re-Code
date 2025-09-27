@@ -1,4 +1,8 @@
-"""Import randint from module random"""
+"""
+The classes of the backend
+
+I seperated them so you could read __backend__ properly <3
+"""
 from random import randint
 
 # Goodluck.
