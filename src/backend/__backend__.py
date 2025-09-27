@@ -254,40 +254,6 @@ can_wait: bool = True
 
 deaths: int = 0
 
-class oldKeybindContainer:
-    """
-    This is a container holding the keybinds
-    of the game.
-
-    Yes it moved to backend from main.
-    """
-    # Main
-    moveKB = "move"
-    actsKB = "acts"
-    taskKB = "task"
-    waitKB = "wait"
-    bagKB = "bag"
-    # Move
-    leftKB = "left"
-    rightKB = "right"
-    upKB = "up"
-    downKB = "down"
-    # Acts
-    askKB = "ask"
-    sleepKB = "sleep"
-    checkKB = "check"
-    getKB = "get"
-    # Misc
-    menuKB = "menu"
-    backKB = "back"
-    KBList = [
-        leftKB, rightKB, upKB,
-        downKB, taskKB, actsKB,
-        bagKB, checkKB, askKB,
-        waitKB, sleepKB, getKB,
-        menuKB, backKB
-    ]
-
 keybind_list: list = [
     ["move", "acts", "task", "wait", "bag"],
     ["left", "right", "up", "down"],
