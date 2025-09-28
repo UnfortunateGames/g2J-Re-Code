@@ -1,5 +1,6 @@
 """The GUI Module ccontaining all the GUI Logic and functions"""
 from time import sleep
+from os import system, name
 from gui.__sprites__ import location_sprites, print_sky
 from backend.__backend__ import (
     cur_location, cur_stats, what_time
@@ -100,3 +101,11 @@ def print_animation(message: str) -> None:
     for char in message:
         print(char, end='', flush=True)
         sleep(animation_speed / len(list(message)))
+
+def clear() -> None:
+    """
+    Clears the screen of the terminal while
+    also checking for the platform to execute the
+    appropriate command for said platform.
+    """
+    system('cls' if name == 'nt' else 'clear')

@@ -250,10 +250,24 @@ can_sleep: bool = False
 done_task: bool = False
 heard_task: bool = False
 animal_exists: bool = False
-can_wait: bool = True
+wait_cooldown: int = 0
 
 deaths: int = 0
 
+seen_locations: list = [
+    [False, False, True, False],
+    [False, False, False, False]
+]
+location_names: list = [
+    [
+        "The Forest Entrance.", "My Campsite.",
+        "The Spawn.", "A Cliff."
+    ],
+    [
+        "His Altar.", "A Small Lake.",
+        "The Plains.", "The Waterfall."
+    ]
+]
 keybind_list: list = [
     ["move", "acts", "task", "wait", "bag"],
     ["left", "right", "up", "down"],
@@ -341,19 +355,19 @@ def update_time_values(time: int, what: str, sleep: bool) -> list:
         what = "Day" if what == "Night" else "Night"
         sleep = False if sleep is True else False
         return [ctime, what, sleep, 0]
-    if time == 0:
+    if ctime == 0:
         return [ctime, None, None, 1]
     return 0
 
 def move_game_time(
         amount: int = 1, time: int = None, what: str = None,
-        sleep: bool = None
+        sleep: bool = None, wait: int = 0
     ) -> list:
     """
     The main function to move game time
 
     This returns a list of structure:
-    [cur_time, what_time]
+    [cur_time, what_time, wait_cooldown]
 
     If parameter amount is 0
     It will move time back 4 hours to emulate sleep
@@ -377,12 +391,20 @@ def move_game_time(
         what = x[1]
         sleep = x[2]
         cur_stats.stats.heal()
-        return [time, what]
+        return [time, what, 0]
+    if amount != 1:
+        time += amount
+        wait = amount
+        x = update_time_values(time, what, False)
+        if x[3] == 0:
+            cur_stats.stats.damage()
+        return [time, what, wait]
     time += amount
     x = update_time_values(time, what, False)
+    wait = 1 if wait <= 0 else wait
     if x[3] == 0:
         cur_stats.stats.damage()
-        return [time, what]
+    return [time, what, wait - 1]
 
 def initialize_variables() -> list:
     """

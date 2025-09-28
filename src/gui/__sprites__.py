@@ -1,12 +1,12 @@
 """The sprite module containing the sprites and animations for the GUI"""
 
 from random import randint
-from backend.__backend__ import KeybindContainer as KBC
+from backend.__backend__ import keybind_list as KBL
 from backend.__classes__ import Character
 from backend.__backend__ import (
     bought_characters, write_log, cur_location,
     cur_task, animal_exists, what_time,
-    done_task
+    done_task, wait_cooldown, seen_locations
 )
 
 # - MENU SPRITES -
@@ -46,11 +46,11 @@ keybind_change_menus: list = [
 {" " * 16}<( KeyBinds : )>
 
 {" " * 16}?> Main Keybinds)
-{" " * 16}-> Move : {KBC.moveKB}
-{" " * 16}-> Acts : {KBC.actsKB}
-{" " * 16}-> Task : {KBC.taskKB}
-{" " * 16}-> Wait : {KBC.waitKB}
-{" " * 16}-> Bag  : {KBC.bagKB}
+{" " * 16}-> Move : {KBL[0][0]}
+{" " * 16}-> Acts : {KBL[0][1]}
+{" " * 16}-> Task : {KBL[0][2]}
+{" " * 16}-> Wait : {KBL[0][3]}
+{" " * 16}-> Bag  : {KBL[0][4]}
 
 {" " * 16}() <- [ Back ]
 """,
@@ -58,10 +58,10 @@ keybind_change_menus: list = [
 {" " * 16}<( KeyBinds : )>
 
 {" " * 16}?> Move Keybinds )
-{" " * 16}-> Left  : {KBC.leftKB}
-{" " * 16}-> Right : {KBC.rightKB}
-{" " * 16}-> Down  : {KBC.downKB}
-{" " * 16}-> Up    : {KBC.upKB}
+{" " * 16}-> Left  : {KBL[1][0]}
+{" " * 16}-> Right : {KBL[1][1]}
+{" " * 16}-> Down  : {KBL[1][2]}
+{" " * 16}-> Up    : {KBL[1][3]}
 
 {" " * 16}() <- [ Back ]
 """,
@@ -69,10 +69,10 @@ keybind_change_menus: list = [
 {" " * 16}<( KeyBinds : )>
 
 {" " * 16}?> Acts Keybinds )
-{" " * 16}-> Sleep : {KBC.sleepKB}
-{" " * 16}-> Check : {KBC.checkKB}
-{" " * 16}-> Ask   : {KBC.askKB}
-{" " * 16}-> Get   : {KBC.getKB}
+{" " * 16}-> Sleep : {KBL[2][0]}
+{" " * 16}-> Check : {KBL[2][1]}
+{" " * 16}-> Ask   : {KBL[2][2]}
+{" " * 16}-> Get   : {KBL[2][3]}
 
 {" " * 16}() <- [ Back ]
 """,
@@ -80,8 +80,8 @@ keybind_change_menus: list = [
 {" " * 16}<( KeyBinds : )>
 
 {" " * 16}?> Misc. Keybinds )
-{" " * 16}-> Back : {KBC.backKB}
-{" " * 16}-> Menu : {KBC.backKB}
+{" " * 16}-> Back : {KBL[3][0]}
+{" " * 16}-> Menu : {KBL[3][1]}
 
 {" " * 16}() <- [ Back ]
 """,
@@ -128,7 +128,7 @@ def fetch_character_menu(character: Character) -> None:
 # Moved from gui since circular imports are
 # disallowed in python :(
 
-def check_act(what: str, act: str) -> str:
+def check_act(what: str = None, act: str = None) -> str:
     """
     This returns a '!' or ' '.
     
@@ -142,53 +142,57 @@ def check_act(what: str, act: str) -> str:
     This should be applied like:
     [ button ]=======( check_act(button) )
     """
+    return_value = ' '
     match what:
         case "left":
             if cur_location[0] != 0:
-                return '!'
+                return_value = '!'
         case "right":
             if cur_location[1] != 0:
-                return '!'
+                return_value = '!'
         case "down":
             if cur_location[0] != 3:
-                return '!'
+                return_value = '!'
         case "up":
             if cur_location[1] != 1:
-                return '!'
+                return_value = '!'
         case "task":
             if cur_location == cur_task.location:
-                return '!'
+                return_value = '!'
         case "get":
             # We will apply this added complexity later
             # in __main__.py
             match cur_location:
                 case [0, 0]:
-                    return '@'
+                    return_value = '@'
                 case [1, 1]:
-                    return '#'
+                    return_value = '#'
                 case [2, 1]:
                     if animal_exists is True:
-                        return '&'
+                        return_value = '&'
         case "acts":
             match act:
                 case "sleep":
                     if what_time == "Night" & cur_location == [1, 0]:
-                        return 'Z'
+                        return_value = 'Z'
                 case "ask":
                     if done_task == False & cur_location == [0, 1]:
-                        return '%'
+                        return_value = '?'
                 case _:
                     if (
-                        check_act("get", None) != ' '
+                        check_act("get") != ' '
                         |
                         check_act("acts", "sleep") != ' '
                         |
                         check_act("acts", "ask") != ' '
                         ):
-                        return '!'
+                        return_value = '!'
+        case "wait":
+            if wait_cooldown <= 0:
+                return_value = '!'
         case _:
             write_log("(Not Fatal) Invalid check_act call")
-    return ' '
+    return return_value
 
 # - IN GAME SPRITES -
 
@@ -325,16 +329,57 @@ def fetch_main_acts() -> str:
     You will need to print() this so do not treat
     this as a standalone function.
     """
-    acts = check_act("acts", None)
-    task = check_act("task", None)
+    acts = check_act("acts")
+    task = check_act("task")
+    wait = check_act("wait")
     return f"""
     <( MAIN ACTS : )>
 
       -> [  Move  ]-<->-<->-<->-<->-<->-<->-<->-<->-<->[ ! ]
       -> [  Acts  ]<->-<->-<->-<->-<->-<->-<->-<->-<->-[ {acts} ]
       -> [  Task  ]->-<->-<->-<->-<->-<->-<->-<->-<->-<[ {task} ]
-      -> [  Wait  ]>-<->-<->-<->-<->-<->-<->-<->-<->-<-[ ! ]
+      -> [  Wait  ]>-<->-<->-<->-<->-<->-<->-<->-<->-<-[ {wait} ]
        [:) <- <[  Bag  ]>
 
     [!] <<- [  Menu  ]
+"""
+
+def fetch_move_acts() -> str:
+    """
+    This returns the move acts menu
+
+    Note that this RETURNS a menu.
+    You will need to print() this so do not treat
+    this as a standalone function.
+    """
+    left = check_act("left")
+    right = check_act("right")
+    down = check_act("down")
+    up = check_act("up")
+    return f"""
+    <( MOVE ACTS : )>
+                                      [ 'FastTravel' ] ->
+                                    ,-[ {up} ]
+                    [ {left} ]-.   ([   UP   ])
+                      ([ LEFT ])   <>   ([  RIGHT ])
+                              ([  DOWN  ])    '-[ {right} ]
+                             [ {down} ]-'
+    [ !? ] <<- [ Back ]
+"""
+
+def fetch_fasttravel_acts() -> None:
+    """
+    This returns the fat travel menu
+
+    Note that this RETURNS a menu.
+    You will need to print() this so do not treat
+    this as a standalone function.
+    """
+    forest = "FE" if seen_locations[0][0] is True else "??"
+    return f"""
+    <( FAST TRAVEL : )>
+
+        (!) -> Fast Travel Consumes more stamina!
+        [ ({forest}) ] >-< [ (??) ] <-> [ (??) ] >-< [ (??) ]
+        [ (??) ] <-> [ (??) ] >-< [ (??) ] <-> [ (??) ]
 """
