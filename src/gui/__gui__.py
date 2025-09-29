@@ -93,14 +93,19 @@ def print_location_display(return_sprite: bool) -> None:
     print_sky(0 if what_time == 0 else 1, False)
     print(location_sprites[cur_location[1]][cur_location[0]])
 
-def print_animation(message: str) -> None:
+def print_animation(message: str = "", centralize: bool = True) -> None:
     """
     Prints a message with a typing animation effect.
     Just a simple animation <3
     """
+    if centralize is True:
+        print(' ' * ((64 - len(list(message))) // 2), end='')
     for char in message:
         print(char, end='', flush=True)
         sleep(animation_speed / len(list(message)))
+
+def centralize_print(message: str) -> None:
+    print(f"{' ' * ((64 - len(list(message))) // 2)}{message}")
 
 def clear() -> None:
     """
@@ -109,3 +114,37 @@ def clear() -> None:
     appropriate command for said platform.
     """
     system('cls' if name == 'nt' else 'clear')
+
+def fetch_task_dialogue(type: str) -> str:    
+    """
+    This fetches the task dialogue.
+    and returns the said dialogue.
+
+    Note that this RETURNS a string.
+    Not print it, so do print it yourself.
+    """
+    if done_task is True:
+        return [
+            "Your task is done.", "Go ahead and rest.",
+            "Carry on."
+    ]
+    if heard_task is False:
+        return [
+            "Ah, you have come back.", f"Your task is {cur_task.name}",
+            cur_task.guide[0], cur_task.guide[1],
+            "Carry on."
+        ]
+    return [
+        "Have you forgotten?", f"Your task is {cur_task.name}",
+        cur_task.guide[0], cur_task.guide[1],
+        "Carry on."
+    ]
+
+def fetch_random_dialogue(type: str) -> Dialogue:
+    if type == "task":
+        dialogue = [cur_task.dialogue[0], cur_task.dialogue[1]]
+    if type == "sleep":
+        dialogue =  [
+            "Ah... Home sweet home...",
+            "Nothing beats a good night's rest"
+        ]
