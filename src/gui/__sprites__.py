@@ -17,6 +17,7 @@ main_menu: str = f"""
 {" " * 16}  <> ->   Start Game   ]
 {" " * 16}  () -> Continue Game  ]
 {" " * 16}  @* ->    Settings    ]
+{" " * 16}  o/ ->   Characters   ]
 {" " * 16}  ~~ ->    Credits     ]
 
 {" " * 16}[] <- [ Exit ]

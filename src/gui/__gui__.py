@@ -115,6 +115,10 @@ def clear() -> None:
     """
     system('cls' if name == 'nt' else 'clear')
 
+# add the task animation function here
+
+# add the move animation function here
+
 def fetch_task_dialogue(type: str) -> str:    
     """
     This fetches the task dialogue.
@@ -148,3 +152,10 @@ def fetch_random_dialogue(type: str) -> Dialogue:
             "Ah... Home sweet home...",
             "Nothing beats a good night's rest"
         ]
+    if type == "wait":
+        dialogue = [
+            "Hmmmmmm... Zen...",
+            "Nature... Serenity...",
+            "Sin... No... Nggrrhh..."
+        ]
+    return dialogue[randint(0, len(dialogue) - 1)]
