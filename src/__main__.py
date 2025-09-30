@@ -1,5 +1,6 @@
 """The main function of g2J-Recode"""
 from time import sleep
+import backend.__backend__ as BE
 import gui.__gui__ as G
 import gui.__sprites__ as S
 
@@ -13,13 +14,13 @@ def character_select_menu() -> None:
     """
     cur_menu = 0
     character_list: list = [
-        newbie_stats, expert_stats,
-        sustainer_stats, fallen_stats
+        BE.newbie_stats, BE.expert_stats,
+        BE.sustainer_stats, BE.fallen_stats
     ]
     while True:
-        clear()
+        G.clear()
         print(G.logo + "\n")
-        G.menu_scroll(fetch_character_menu(character_list[cur_menu]))
+        G.menu_scroll(S.fetch_character_menu(character_list[cur_menu]))
         x = input(f"{' ' * 14}<?->> ").lower
         match x:
             case "left":
@@ -47,7 +48,8 @@ def game_menu() -> None:
                 continue
             case "continue":
                 if has_loaded is False:
-                    input(f"{' ' * 14}You haven't loaded a save yet!\n{' ' * 14}Press enter to continue...")
+                    print(f"{' ' * 14}You haven't loaded a save yet!")
+                    input(f"{' ' * 14}Press enter to continue...")
                 else:
                     # start game
                     continue

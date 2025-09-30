@@ -1,9 +1,11 @@
 """The GUI Module ccontaining all the GUI Logic and functions"""
 from time import sleep
+from random import randint
 from os import system, name
 from gui.__sprites__ import location_sprites, print_sky
 from backend.__backend__ import (
-    cur_location, cur_stats, what_time
+    cur_location, cur_stats, what_time,\
+        done_task, heard_task, cur_task
 )
 
 animation_speed: int = 3.5
@@ -105,7 +107,11 @@ def print_animation(message: str = "", centralize: bool = True) -> None:
         sleep(animation_speed / len(list(message)))
 
 def centralize_print(message: str) -> None:
-    print(f"{' ' * ((64 - len(list(message))) // 2)}{message}")
+    """
+    This centralizes the parameter message to print.
+    """
+    spaces = ' ' * ((64 - len(list(message))) // 2)
+    print(f"{spaces}{message}")
 
 def clear() -> None:
     """
@@ -119,7 +125,7 @@ def clear() -> None:
 
 # add the move animation function here
 
-def fetch_task_dialogue(type: str) -> str:    
+def fetch_task_dialogue() -> str:
     """
     This fetches the task dialogue.
     and returns the said dialogue.
@@ -144,15 +150,23 @@ def fetch_task_dialogue(type: str) -> str:
         "Carry on."
     ]
 
-def fetch_random_dialogue(type: str) -> Dialogue:
-    if type == "task":
-        dialogue = [cur_task.dialogue[0], cur_task.dialogue[1]]
-    if type == "sleep":
+def fetch_random_dialogue(dialogue_type: str) -> str:
+    """
+    This fetches a random piece of dialogue.
+    
+    Used in the if statements below.
+    """
+    dialogue = []
+    if dialogue_type == "task":
+        dialogue = [
+            cur_task.dialogue[0], cur_task.dialogue[1]
+        ]
+    if dialogue_type == "sleep":
         dialogue =  [
             "Ah... Home sweet home...",
             "Nothing beats a good night's rest"
         ]
-    if type == "wait":
+    if dialogue_type == "wait":
         dialogue = [
             "Hmmmmmm... Zen...",
             "Nature... Serenity...",
