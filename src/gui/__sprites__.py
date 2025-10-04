@@ -39,7 +39,7 @@ credit_menu: str = f"""
 {" " * 16} Creator - '.- E-SPLASH -.'
 {" " * 16}    THIS IS ALL I GOT
 
-{" " * 16}() <- [ Back]
+{" " * 16}() <- [ Back ]
 """
 
 keybind_change_menus: list = [

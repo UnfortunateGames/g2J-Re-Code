@@ -6,7 +6,12 @@ import gui.__sprites__ as S
 
 has_loaded: bool = False
 
-
+def settings_menu() -> None:
+    """
+    This is the settings menu.
+    """
+    while True:
+        G.clear()
 
 def character_select_menu() -> None:
     """
@@ -24,23 +29,28 @@ def character_select_menu() -> None:
         x = input(f"{' ' * 14}<?->> ").lower
         match x:
             case "left":
-                continue
+                cur_menu += 1
+                if cur_menu > 3:
+                    cur_menu = 0
             case "right":
-                continue
+                cur_menu -= 1
+                if cur_menu < 0:
+                    cur_menu = 3
             case "buy":
                 continue
             case "equip":
-                continue
+                if BE.bought_characters[cur_menu] is False:
+                    input(f"{' ' * 16}Character is not bought yet!")
+                else:
+                    BE.cur_stats = character_list[cur_menu]
             case "menu":
                 break
 
 def game_menu() -> None:
     """
-    The is the MAIN game menu
+    This is the MAIN game menu
     """
     while True:
-        G.clear()
-        print(G.logo + "\n")
         G.menu_scroll(S.main_menu)
         x = input(f"\n{' ' * 14}<(->> ").lower()
         match x:
@@ -71,7 +81,7 @@ def initialize_intro() -> None:
     This initializes the game, basically running the intro.
     """
     G.clear()
-    print("\n\n\n\n" + ' ' * 19, end='')
+    print("\n\n\n\n")
     G.print_animation("ElectricSplash Presents...")
     sleep(1.5)
     G.clear()

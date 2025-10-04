@@ -4,8 +4,9 @@ from random import randint
 from os import system, name
 from gui.__sprites__ import location_sprites, print_sky
 from backend.__backend__ import (
-    cur_location, cur_stats, what_time,\
-        done_task, heard_task, cur_task
+    cur_location, cur_stats, what_time,
+    done_task, heard_task, cur_task,
+    write_log
 )
 
 animation_speed: int = 3.5
@@ -24,6 +25,7 @@ def menu_scroll(menu: str) -> None:
     Prints the menu with a scroll wrapper
     To reduce any repitition in the sprites
     """
+    clear()
     print(logo)
     print(f"{' ' * 12}_0_{' ' * 34}_0_")
     print(f"{' ' * 12}|/|{'~' * 34}|/|")
@@ -78,7 +80,7 @@ def display_stats() -> None:
 """
     print(output)
 
-def print_location_display(return_sprite: bool) -> None:
+def print_location_display(return_sprite: bool) -> str:
     """
     This is the logic for displaying the current location
     in the game.
@@ -94,17 +96,21 @@ def print_location_display(return_sprite: bool) -> None:
         )
     print_sky(0 if what_time == 0 else 1, False)
     print(location_sprites[cur_location[1]][cur_location[0]])
+    return 'the linter suggested to return something lol'
 
 def print_animation(message: str = "", centralize: bool = True) -> None:
     """
     Prints a message with a typing animation effect.
     Just a simple animation <3
     """
+    delay_amount = animation_speed / (len(list(message)) * len(list(message)))
+    delay = delay_amount
     if centralize is True:
         print(' ' * ((64 - len(list(message))) // 2), end='')
     for char in message:
         print(char, end='', flush=True)
-        sleep(animation_speed / len(list(message)))
+        sleep(delay)
+        delay += delay_amount
 
 def centralize_print(message: str) -> None:
     """
@@ -123,7 +129,42 @@ def clear() -> None:
 
 # add the task animation function here
 
-# add the move animation function here
+def move_animation(speed: int = 1, debug: bool = False) -> None:
+    """
+    This is the move animation function.
+    Debug mode is available.
+
+    The debug mode will write to the log however!
+    This is done so you can report how trash I am at
+    coding.
+    """
+    legs = ["/ \\", "/<", "<|"]
+    head = cur_stats.head
+    body = cur_stats.body
+    dots = 0
+    delay = (animation_speed / 15) / speed
+    if debug is True:
+        write_log("(Not Fatal) Move animation function on debug mode!")
+    for i in range(15):
+        clear()
+        leg = i % 3
+        dot_timer = i % 5
+        if dot_timer == 0:
+            dots += 1
+        # Yeah, I'd revise this, but nah.
+        # One print call is all it takes
+        print(
+            i + '\n' if debug is True else '\n',
+            f"\n\n{' '* 25}_0_{' ' * 11}_0_\n",
+            f"{' '* 24}|/|{'~' * 11}|/|\n",
+            f"\n{(' ' * 32) + head}\n{(' ' * 32) + body}\n",
+            f"{(' ' * 31) + legs[leg]}\n",
+            f"{' ' * 28}Moving{'.' * dots}\n",
+            f"\n{' '* 25}|/|{'~' * 11}|/|\n",
+            f"{' '* 24}'0'{' ' * 11}'0'"
+        )
+        sleep(delay)
+
 
 def fetch_task_dialogue() -> str:
     """
