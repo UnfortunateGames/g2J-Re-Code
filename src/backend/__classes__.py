@@ -176,7 +176,8 @@ class MoveSet:
     Initializer will only contain one parameter:
     moves = A list of 3 move classes
     """
-    def __init__(self, moves: list) -> None:
+    def __init__(self, name: str, moves: list) -> None:
+        self.name = name
         self.moves = moves
     def next_move(self) -> None:
         """
@@ -272,9 +273,9 @@ class Animal:
         It uses the randint function imported from the random module.
         No cases for if all moves are on cooldown.
         Since atleast ONE move has no cooldown
-
-        ! I should refactor this
         """
+        # Maybe not refactor, just a tad rework.
+        # Minmax maybe?
         y = self.move_set.moves[randint(0, 2)].curCooldown
         while y != 0:
             y = self.move_set.moves[randint(0, 2)].curCooldown

@@ -1,10 +1,12 @@
 """The main function of g2J-Recode"""
+
 from time import sleep
 import backend.__backend__ as BE
 import gui.__gui__ as G
 import gui.__sprites__ as S
 
 has_loaded: bool = False
+
 
 def settings_menu() -> None:
     """
@@ -13,14 +15,17 @@ def settings_menu() -> None:
     while True:
         G.clear()
 
+
 def character_select_menu() -> None:
     """
     This is the character select menu.
     """
     cur_menu = 0
     character_list: list = [
-        BE.newbie_stats, BE.expert_stats,
-        BE.sustainer_stats, BE.fallen_stats
+        BE.NEWBIE_STATS,
+        BE.EXPERT_STATS,
+        BE.SUSTAINER_STATS,
+        BE.fallen_stats,
     ]
     while True:
         G.clear()
@@ -45,6 +50,7 @@ def character_select_menu() -> None:
                     BE.cur_stats = character_list[cur_menu]
             case "menu":
                 break
+
 
 def game_menu() -> None:
     """
@@ -76,6 +82,7 @@ def game_menu() -> None:
             case "exit":
                 break
 
+
 def initialize_intro() -> None:
     """
     This initializes the game, basically running the intro.
@@ -91,6 +98,8 @@ def initialize_intro() -> None:
     input(f"\n\n{' ' * 19}Press Enter to continue...")
     game_menu()
 
+
 if __name__ == "__main__":
-    # Eh... What even is this for?
+    # Maybe I need to rename it to main?
+    # I mean who cares about names?
     initialize_intro()

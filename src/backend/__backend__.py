@@ -1,4 +1,5 @@
 """The backend, containing all the in game variables and logic"""
+
 from random import randint
 from time import strftime, localtime
 import backend.__classes__ as BEC
@@ -7,35 +8,26 @@ import backend.__classes__ as BEC
 
 # - STATIC TASK VARIABLES -
 
-chop_trees: BEC.Task = BEC.Task(
+CHOP_TREES: BEC.Task = BEC.Task(
     name="Chop Trees",
-    dialogue=[
-        "Cut down trees for me.",
-        "This will train you."
-    ],
+    dialogue=["Cut down trees for me.", "This will train you."],
     guide=[
         "Go to the forest entrance.",
         "I placed trees there.",
-        "Cut them down for me."
+        "Cut them down for me.",
     ],
     prize=2,
     location=[0, 0],
-    drain=[0, 6]
+    drain=[0, 6],
 )
 
-praise_me: BEC.Task = BEC.Task(
+PRAISE_ME: BEC.Task = BEC.Task(
     name="Praise me",
-    dialogue=[
-        "Hallelujah!",
-        "Rejoice in my world!"
-    ],
-    guide=[
-        "In my altar...",
-        "Praise me!"
-    ],
+    dialogue=["Hallelujah!", "Rejoice in my world!"],
+    guide=["In my altar...", "Praise me!"],
     prize=1,
     location=[0, 1],
-    drain=[0, 4]
+    drain=[0, 4],
 )
 
 # ! I plan to make this a special task
@@ -44,74 +36,48 @@ praise_me: BEC.Task = BEC.Task(
 # ! and if the player does not eat an animal until the next day
 # ! it will be completed automatically
 # ! This needs a special use-case in __main__.py
-dont_eat: BEC.Task = BEC.Task(
+DONT_EAT: BEC.Task = BEC.Task(
     name="Don't Eat",
     dialogue=[
         "You must Resist the temptation.",
         "Do not eat the animals.",
     ],
-    guide=[
-        "Go to the plains.",
-        "There are animalss there.",
-        "Don't eat them."
-    ],
+    guide=["Go to the plains.", "There are animalss there.", "Don't eat them."],
     prize=3,
     location=[2, 1],
-    drain=[3, 6]
+    drain=[3, 6],
 )
 
 # ! This needs a special use-case in __main__.py
 # ! Temporarily a normal task for now
-sacrifice: BEC.Task = BEC.Task(
+SACRIFICE: BEC.Task = BEC.Task(
     name="Sacrifice",
-    dialogue=[
-        "Give me goats.",
-        "Their blood, my creation."
-    ],
-    guide=[
-        "Go to the cliff.",
-        "Bring me a goat.",
-        "Sacrfice it."
-    ],
+    dialogue=["Give me goats.", "Their blood, my creation."],
+    guide=["Go to the cliff.", "Bring me a goat.", "Sacrfice it."],
     prize=6,
     location=[3, 0],
-    drain=[0, 4]
+    drain=[0, 4],
 )
 
-baptism: BEC.Task = BEC.Task(
+BAPTISM: BEC.Task = BEC.Task(
     name="Baptism",
-    dialogue=[
-        "You must be cleansed.",
-        "Baptism is the way."
-    ],
-    guide=[
-        "Go to the lake.",
-        "Baptise yourself."
-    ],
+    dialogue=["You must be cleansed.", "Baptism is the way."],
+    guide=["Go to the lake.", "Baptise yourself."],
     prize=2,
     location=[1, 1],
-    drain=[0, 6]
+    drain=[0, 6],
 )
 
-celebrate: BEC.Task = BEC.Task(
+CELEBRATE: BEC.Task = BEC.Task(
     name="Celebrate",
-    dialogue=[
-        "Rejoice in my world.",
-        "Hallelujah!"
-    ],
-    guide=[
-        "Go to your camp.",
-        "Celebrate with me."
-    ],
+    dialogue=["Rejoice in my world.", "Hallelujah!"],
+    guide=["Go to your camp.", "Celebrate with me."],
     prize=1,
     location=[1, 0],
-    drain=[0, 4]
+    drain=[0, 4],
 )
 
-task_list: list = [
-    chop_trees, praise_me, dont_eat,
-    sacrifice, baptism, celebrate
-]
+TASK_LIST: list = [CHOP_TREES, PRAISE_ME, DONT_EAT, SACRIFICE, BAPTISM, CELEBRATE]
 
 # Holy Water Creation Task Soon (Special Task)
 
@@ -124,49 +90,49 @@ task_list: list = [
 
 # - STATIC ENEMY VALUES -
 
-cow_enemy: BEC.Animal = BEC.Animal(
+COW_ENEMY: BEC.Animal = BEC.Animal(
     name="Cow",
     move_set={
         "Instincts.",
         BEC.Move("Ram", 0, 4, 0),
         BEC.Move("Rest", 1, 8, 1),
-        BEC.Move("Kick", 0, 12, 2)
+        BEC.Move("Kick", 0, 12, 2),
     },
     stats={30},
     prize=2,
-    meat=3
+    meat=3,
 )
 
-sheep_enemy: BEC.Animal = BEC.Animal(
+SHEEP_ENEMY: BEC.Animal = BEC.Animal(
     name="Cow",
     move_set={
         "Instincts.",
         BEC.Move("Ram", 0, 2, 0),
         BEC.Move("Rest", 1, 8, 0),
-        BEC.Move("Kick", 0, 10, 2)
+        BEC.Move("Kick", 0, 10, 2),
     },
     stats={35},
     prize=1,
-    meat=2
+    meat=2,
 )
 
-goat_enemy: BEC.Animal = BEC.Animal(
+GOAT_ENEMY: BEC.Animal = BEC.Animal(
     name="Goat",
     move_set={
         "Instincts.",
         BEC.Move("Kick", 0, 6, 1),
         BEC.Move("Preperation", 1, 6, 0),
-        BEC.Move("Horn Ram", 0, 16, 3)
+        BEC.Move("Horn Ram", 0, 16, 3),
     },
     stats={45},
     prize=3,
-    meat=5
+    meat=5,
 )
 
 # - STATIC CHARACTER VALUES -
 
-newbie_stats: BEC.Character = BEC.Character(
-    stats={20, 15, 0, 2},
+NEWBIE_STATS: BEC.Character = BEC.Character(
+    stats=BEC.Stats(20, 15, 0, 2),
     name="Newbie",
     head=" o ",
     body="/|\\",
@@ -177,12 +143,12 @@ newbie_stats: BEC.Character = BEC.Character(
         "Instincts.",
         BEC.Move("Punch", 0, 2, 0),
         BEC.Move("Kick", 0, 3, 1),
-        BEC.Move("Thrust", 0, 12, 4)
-    }
+        BEC.Move("Thrust", 0, 12, 4),
+    },
 )
 
-expert_stats: BEC.Character = BEC.Character(
-    stats={45, 25, 0, 3},
+EXPERT_STATS: BEC.Character = BEC.Character(
+    stats=BEC.Stats(45, 25, 0, 3),
     name="Expert",
     head="<+>",
     body="/|\\",
@@ -193,40 +159,44 @@ expert_stats: BEC.Character = BEC.Character(
         "Kung Fu.",
         BEC.Move("Fist Hit", 0, 3, 0),
         BEC.Move("Spin Kick", 0, 5, 1),
-        BEC.Move("Power Fist", 0, 16, 3)
-    }
+        BEC.Move("Power Fist", 0, 16, 3),
+    },
 )
 
-sustainer_stats: BEC.Character = BEC.Character(
-    stats={60, 20, 1, 4},
+SUSTAINER_STATS: BEC.Character = BEC.Character(
+    stats=BEC.Stats(60, 20, 1, 4),
     name="Sustainer",
     head="[@]",
     body="/U\\",
     description="Gluttony.",
     price=15,
     index=2,
-    move_set={
-        "Sumo.",
-        BEC.Move("Crush", 0, 3, 0),
-        BEC.Move("Smash", 0, 5, 1),
-        BEC.Move("Push", 0, 20, 4)
-    }
+    move_set=BEC.MoveSet(
+        name="Sumo.",
+        moves=[
+            BEC.Move("Crush", 0, 3, 0),
+            BEC.Move("Smash", 0, 5, 1),
+            BEC.Move("Push", 0, 20, 4),
+        ],
+    ),
 )
 
-fallen_stats: BEC.Character = BEC.Character(
-    stats={30, 1, 2, 0},
+FALLEN_STATS: BEC.Character = BEC.Character(
+    stats=BEC.Stats(30, 1, 2, 0),
     name="Fallen",
     head="{*}",
     body="'|'",
     description="Im sorry angel.",
     price=30,
     index=3,
-    move_set={
-        "Divine Power.",
-        BEC.Move("Divine Bolt", 0, 6, 0),
-        BEC.Move("Holy Smite", 0, 18, 1),
-        BEC.Move("God's Will", 0, 100, 3)
-    }
+    move_set=BEC.MoveSet(
+        name="Divine Power.",
+        moves=[
+            BEC.Move("Divine Bolt", 0, 6, 0),
+            BEC.Move("Holy Smite", 0, 18, 1),
+            BEC.Move("God's Will", 0, 100, 3),
+        ],
+    ),
 )
 
 # - DYNAMIC BACKEND VARIABLES -
@@ -236,7 +206,7 @@ fallen_stats: BEC.Character = BEC.Character(
 bought_characters: list = [True, False, False, False]
 
 badges: int = 0
-cur_stats: BEC.Character = newbie_stats
+cur_stats: BEC.Character = NEWBIE_STATS
 
 cur_location: list = [0, 0]
 cur_animal: BEC.Animal = None
@@ -254,28 +224,20 @@ wait_cooldown: int = 0
 
 deaths: int = 0
 
-seen_locations: list = [
-    [False, False, True, False],
-    [False, False, False, False]
-]
-location_names: list = [
-    [
-        "The Forest Entrance.", "My Campsite.",
-        "The Spawn.", "A Cliff."
-    ],
-    [
-        "His Altar.", "A Small Lake.",
-        "The Plains.", "The Waterfall."
-    ]
+seen_locations: list = [[False, False, True, False], [False, False, False, False]]
+LOCATION_NAMES: list = [
+    ["The Forest Entrance.", "My Campsite.", "The Spawn.", "A Cliff."],
+    ["His Altar.", "A Small Lake.", "The Plains.", "The Waterfall."],
 ]
 keybind_list: list = [
     ["move", "acts", "task", "wait", "bag"],
     ["left", "right", "up", "down"],
     ["ask", "sleep", "check", "get"],
-    ["menu", "back"]
+    ["menu", "back"],
 ]
 
 # - DEBUGGING -
+
 
 def write_log(message: str = "(?) Log called but no messages") -> None:
     """
@@ -293,21 +255,25 @@ def write_log(message: str = "(?) Log called but no messages") -> None:
     and for attempts to a try except
     [12:00:00] - (attempt) Saving Game...
     """
+    current_time = strftime("%H:%M:%S", localtime())
     try:
         with open("src/backend/logFile/__log__.txt", "a", encoding="utf-8") as file:
-            file.write(f"[{strftime("%H:%M:%S", localtime())}] - {message}\n")
+            file.write(f"[{current_time}] - {message}\n")
     except FileNotFoundError:
-        open("src/backend/logFile/__log__.txt", "x", encoding="utf-8").close()
+        with open("src/backend/logFile/__log__.txt", "x", encoding="utf-8") as file:
+            file.close()
         write_log(message)
     except Exception as e:
         raise e
 
+
 # - IF RETURN -
+
 
 def check_death() -> int:
     """
     Checks for death to prevent repitition in __main__.py
-    
+
     If current_health is below 1
     it returns 1 as in ACTUAL DEATH
 
@@ -324,6 +290,7 @@ def check_death() -> int:
         return 2
     return 0
 
+
 def return_task() -> BEC.Task:
     """
     This will return a task at random
@@ -332,14 +299,16 @@ def return_task() -> BEC.Task:
     And returns a Task from that list
     at index randint(0, length of task_list)
     """
-    return task_list[randint(0, len(task_list) - 1)]
+    return TASK_LIST[randint(0, len(TASK_LIST) - 1)]
+
 
 # - UPDATE FUNCTIONS -
+
 
 def update_time_values(time: int, what: str, sleep: bool) -> list:
     """
     Updates time variables
-    
+
     This returns a list of structure:
     [time, what_time, can_sleep, return_value]
 
@@ -359,10 +328,14 @@ def update_time_values(time: int, what: str, sleep: bool) -> list:
         return [ctime, None, None, 1]
     return 0
 
+
 def move_game_time(
-        amount: int = 1, time: int = None, what: str = None,
-        sleep: bool = None, wait: int = 0
-    ) -> list:
+    amount: int = 1,
+    time: int = None,
+    what: str = None,
+    sleep: bool = None,
+    wait: int = 0,
+) -> list:
     """
     The main function to move game time
 
@@ -375,7 +348,7 @@ def move_game_time(
 
     Else it will move time forward by a specified amount
     And invokes the update_time_values() function to update time variables
-    
+
     If the return_value is 0, it will invoke cur_stats.stats.damage()
     to degrade the player's stats
     """
@@ -406,25 +379,12 @@ def move_game_time(
         cur_stats.stats.damage()
     return [time, what, wait - 1]
 
-def initialize_variables() -> list:
-    """
-    Initializes all dynamic backend variables
 
-    To reduce the use of the global keyword
-    It returns a list of structure:
-    [
-    chance of animal, animal type, all false values,
-    all true values, return task, all 0 variables
-    ]
+# initialize variables sent to the shadow realm.
 
-    This is to be unpacked in __main__.py
-    """
-    return [
-        randint(0, 10), randint(0, 2), False,
-        True, return_task(), 0
-    ]
 
 # - SAVE FILE SHENANIGANS -
+
 
 def save_game() -> None:
     """
@@ -480,11 +440,13 @@ def save_game() -> None:
             file.write(f"{deaths}\n")
     except FileNotFoundError:
         write_log("(Not Fatal) Save File not found, creating new file")
-        open("src/backend/saveFile/__save__.txt", "x", encoding="utf-8").close()
+        with open("src/backend/saveFile/__save__.txt", "x", encoding="utf-8") as file:
+            file.close()
         save_game()
     except Exception as e:
         write_log("(FATAL) Unknown error saving game with exit code: " + e)
         raise e
+
 
 def load_game() -> list:
     """
@@ -493,50 +455,55 @@ def load_game() -> list:
 
     It loads all essential backend variables
     Read the save_game function DOCSTRING for the structure
-    
+
     If it fails no failsafe is incurred
     and raises the error for the python interpreter to handle
 
-    It will return a list of structure:
-    [bought characters, badges, cur location x,
-    cur location y, cur task, game time,
-    done task, animal exists, deaths,
-    kb_list]
+    It will return a dictionary.
+    It's keywords are:
+    keybinds, bought, badges, location, curtask, gametime, 
+    donetask, animalexists, deaths
 
     This saves a global statement
     and it is to be unpacked in __main__.py
     """
     try:
         write_log("(Attempt) Loading Game...")
-        file_bought_characters: list = []
+        save_var = {
+            "keybinds": [],
+            "bought": [],
+            "badges": 0,
+            "location": [],
+            "curtask": False,
+            "gametime": 0,
+            "donetask": False,
+            "animalexists": False,
+            "deaths": 0
+        }
         i = 0
-        kb_list = []
         with open("src/backend/saveFile/__save__.txt", "r", encoding="utf-8") as file:
             lines = file.readlines()
             for x in enumerate(keybind_list):
-                kb_list.append([])
+                save_var["keybinds"].append([])
                 for y in enumerate(keybind_list[x]):
-                    kb_list[x][y] = lines[i]
+                    save_var["keybinds"][x][y] = lines[i]
                     i += 1
             for z in range(4):
-                file_bought_characters[z] = lines[z + 14].strip() == "True"
-            file_badges = int(lines[17].strip())
+                save_var["bought"][z] = lines[z + 14].strip() == "True"
+            save_var["badges"] = int(lines[17].strip())
             cur_stats.index = int(lines[18].strip())
             cur_stats.name = lines[19].strip()
             cur_stats.stats.curHealth = int(lines[20].strip())
             cur_stats.stats.curStamina = int(lines[21].strip())
-            file_location = [int(lines[22].strip()), int(lines[23].strip())]
-            file_cur_task = lines[24].strip()
-            file_game_time = int(lines[25].strip())
-            file_done_task = lines[26].strip() == "True"
-            file_animal_exists = lines[27].strip() == "True"
-            file_deaths = int(lines[28].strip())
-            return [
-                file_bought_characters, file_badges, file_location[0],
-                file_location[1], file_cur_task, file_game_time,
-                file_done_task, file_animal_exists, file_deaths,
-                kb_list
+            save_var["location"] = [
+                int(lines[22].strip()), int(lines[23].strip())
             ]
+            save_var["curtask"] = lines[24].strip()
+            save_var["gametime"] = int(lines[25].strip())
+            save_var["donetask"] = lines[26].strip() == "True"
+            save_var["animalexists"] = lines[27].strip() == "True"
+            save_var["deaths"] = int(lines[28].strip())
+            return save_var
     except Exception as e:
         write_log("(FATAL) Unknown error loading game with exit code: " + e)
         raise e

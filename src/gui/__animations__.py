@@ -1,3 +1,5 @@
+"""The animation module! To see how long these things take in real time!"""
+
 from backend.__backend__ import cur_stats
 
 head: str = cur_stats.head

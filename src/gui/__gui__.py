@@ -1,12 +1,17 @@
 """The GUI Module ccontaining all the GUI Logic and functions"""
+
 from time import sleep
 from random import randint
 from os import system, name
 from gui.__sprites__ import location_sprites, print_sky
 from backend.__backend__ import (
-    cur_location, cur_stats, what_time,
-    done_task, heard_task, cur_task,
-    write_log
+    cur_location,
+    cur_stats,
+    what_time,
+    done_task,
+    heard_task,
+    cur_task,
+    write_log,
 )
 
 animation_speed: int = 3.5
@@ -19,6 +24,7 @@ logo: str = f"""
 {' ' * 16} "= '_'| || ||_''_'| )'__'__ ="
 {' ' * 16}    '-._Made by : ESplash_.-'
 """
+
 
 def menu_scroll(menu: str) -> None:
     """
@@ -33,7 +39,9 @@ def menu_scroll(menu: str) -> None:
     print(f"{' ' * 12}|/|{'~' * 34}|/|")
     print(f"{' ' * 12}'0'{' ' * 34}'0'")
 
+
 # - IN GAME MENUS -
+
 
 def act_scroll(sprite: str = None) -> None:
     """
@@ -49,6 +57,7 @@ def act_scroll(sprite: str = None) -> None:
     else:
         print()
 
+
 def display_stats() -> None:
     """
     This will print the stat panel in the game
@@ -61,16 +70,12 @@ def display_stats() -> None:
     mhealth = stats.max_health
     cstamina = stats.cur_stamina
     mstamina = stats.max_stamina
-    health_amount = int(
-        chealth // (mhealth / 10)
-    )
-    stamina_amount = int(
-        cstamina // (mstamina / 10)
-    )
-    health = '#' * health_amount
-    no_health = '-' * (10 - health_amount)
-    stamina = '#' * stamina_amount
-    no_stamina = '-' * (10 - stamina_amount)
+    health_amount = int(chealth // (mhealth / 10))
+    stamina_amount = int(cstamina // (mstamina / 10))
+    health = "#" * health_amount
+    no_health = "-" * (10 - health_amount)
+    stamina = "#" * stamina_amount
+    no_stamina = "-" * (10 - stamina_amount)
     head = cur_stats.head
     body = cur_stats.body
     output = f"""
@@ -79,6 +84,7 @@ def display_stats() -> None:
 '.==HP==[{health}{no_health}]=SP==[{stamina}{no_stamina}]=|  // -> ELECTRICSPLASH .'
 """
     print(output)
+
 
 def print_location_display(return_sprite: bool) -> str:
     """
@@ -91,12 +97,12 @@ def print_location_display(return_sprite: bool) -> str:
     if return_sprite is True:
         return (
             print_sky(0 if what_time == 0 else 1, True)
-            +
-            location_sprites[cur_location[1]][cur_location[0]]
+            + location_sprites[cur_location[1]][cur_location[0]]
         )
     print_sky(0 if what_time == 0 else 1, False)
     print(location_sprites[cur_location[1]][cur_location[0]])
-    return 'the linter suggested to return something lol'
+    return "the linter suggested to return something lol"
+
 
 def print_animation(message: str = "", centralize: bool = True) -> None:
     """
@@ -106,18 +112,20 @@ def print_animation(message: str = "", centralize: bool = True) -> None:
     delay_amount = animation_speed / (len(list(message)) * len(list(message)))
     delay = delay_amount
     if centralize is True:
-        print(' ' * ((64 - len(list(message))) // 2), end='')
+        print(" " * ((64 - len(list(message))) // 2), end="")
     for char in message:
-        print(char, end='', flush=True)
+        print(char, end="", flush=True)
         sleep(delay)
         delay += delay_amount
+
 
 def centralize_print(message: str) -> None:
     """
     This centralizes the parameter message to print.
     """
-    spaces = ' ' * ((64 - len(list(message))) // 2)
+    spaces = " " * ((64 - len(list(message))) // 2)
     print(f"{spaces}{message}")
+
 
 def clear() -> None:
     """
@@ -125,9 +133,11 @@ def clear() -> None:
     also checking for the platform to execute the
     appropriate command for said platform.
     """
-    system('cls' if name == 'nt' else 'clear')
+    system("cls" if name == "nt" else "clear")
+
 
 # add the task animation function here
+
 
 def move_animation(speed: int = 1, debug: bool = False) -> None:
     """
@@ -154,14 +164,14 @@ def move_animation(speed: int = 1, debug: bool = False) -> None:
         # Yeah, I'd revise this, but nah.
         # One print call is all it takes
         print(
-            i + '\n' if debug is True else '\n',
+            i + "\n" if debug is True else "\n",
             f"\n\n{' '* 25}_0_{' ' * 11}_0_\n",
             f"{' '* 24}|/|{'~' * 11}|/|\n",
             f"\n{(' ' * 32) + head}\n{(' ' * 32) + body}\n",
             f"{(' ' * 31) + legs[leg]}\n",
             f"{' ' * 28}Moving{'.' * dots}\n",
             f"\n{' '* 25}|/|{'~' * 11}|/|\n",
-            f"{' '* 24}'0'{' ' * 11}'0'"
+            f"{' '* 24}'0'{' ' * 11}'0'",
         )
         sleep(delay)
 
@@ -175,42 +185,39 @@ def fetch_task_dialogue() -> str:
     Not print it, so do print it yourself.
     """
     if done_task is True:
-        return [
-            "Your task is done.", "Go ahead and rest.",
-            "Carry on."
-    ]
+        return ["Your task is done.", "Go ahead and rest.", "Carry on."]
     if heard_task is False:
         return [
-            "Ah, you have come back.", f"Your task is {cur_task.name}",
-            cur_task.guide[0], cur_task.guide[1],
-            "Carry on."
+            "Ah, you have come back.",
+            f"Your task is {cur_task.name}",
+            cur_task.guide[0],
+            cur_task.guide[1],
+            "Carry on.",
         ]
     return [
-        "Have you forgotten?", f"Your task is {cur_task.name}",
-        cur_task.guide[0], cur_task.guide[1],
-        "Carry on."
+        "Have you forgotten?",
+        f"Your task is {cur_task.name}",
+        cur_task.guide[0],
+        cur_task.guide[1],
+        "Carry on.",
     ]
+
 
 def fetch_random_dialogue(dialogue_type: str) -> str:
     """
     This fetches a random piece of dialogue.
-    
+
     Used in the if statements below.
     """
     dialogue = []
     if dialogue_type == "task":
-        dialogue = [
-            cur_task.dialogue[0], cur_task.dialogue[1]
-        ]
+        dialogue = [cur_task.dialogue[0], cur_task.dialogue[1]]
     if dialogue_type == "sleep":
-        dialogue =  [
-            "Ah... Home sweet home...",
-            "Nothing beats a good night's rest"
-        ]
+        dialogue = ["Ah... Home sweet home...", "Nothing beats a good night's rest"]
     if dialogue_type == "wait":
         dialogue = [
             "Hmmmmmm... Zen...",
             "Nature... Serenity...",
-            "Sin... No... Nggrrhh..."
+            "Sin... No... Nggrrhh...",
         ]
     return dialogue[randint(0, len(dialogue) - 1)]

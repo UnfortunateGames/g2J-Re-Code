@@ -1,13 +1,14 @@
-"""The sprite module containing the sprites and animations for the GUI"""
+"""
+The sprite module containing the sprites and animations for the GUI
+"""
 
+# Built-in Modules
 from random import randint
+
+# External Modules
+from backend import __backend__ as BE
 from backend.__backend__ import keybind_list as KBL
 from backend.__classes__ import Character
-from backend.__backend__ import (
-    bought_characters, write_log, cur_location,
-    cur_task, animal_exists, what_time,
-    done_task, wait_cooldown, seen_locations
-)
 
 # - MENU SPRITES -
 
@@ -88,7 +89,8 @@ keybind_change_menus: list = [
 """,
 ]
 
-def fetch_character_menu(character: Character) -> None:
+
+def fetch_character_menu(character: Character) -> str:
     """
     This returns a menu sprite
 
@@ -103,12 +105,12 @@ def fetch_character_menu(character: Character) -> None:
     body = character.body
     price = character.price
     description = character.description
-    if bought_characters[character.index] is False:
+    if BE.bought_characters[character.index] is False:
         equip = f"{price} badges > [ Get ]"
-    elif bought_characters[character.index] is True:
+    elif BE.bought_characters[character.index] is True:
         equip = "Unlocked! > Equip"
     else:
-        write_log(
+        BE.write_log(
             f"(Not Fatal) Character equip was undefined at index: {character.index}"
         )
         equip = "Error!"
@@ -125,14 +127,16 @@ def fetch_character_menu(character: Character) -> None:
 """
     return sprite
 
+
 # - IF RETURN -
 # Moved from gui since circular imports are
 # disallowed in python :(
 
+
 def check_act(what: str = None, act: str = None) -> str:
     """
     This returns a '!' or ' '.
-    
+
     This will be mainly used for the
     menu guis to check if available.
 
@@ -143,64 +147,66 @@ def check_act(what: str = None, act: str = None) -> str:
     This should be applied like:
     [ button ]=======( check_act(button) )
     """
-    return_value = ' '
+    # ! I should probably refactor this...
+    return_value = " "
+    location = BE.cur_location
     match what:
         case "left":
-            if cur_location[0] != 0:
-                return_value = '!'
+            if location[0] != 0:
+                return_value = "!"
         case "right":
-            if cur_location[1] != 0:
-                return_value = '!'
+            if location[1] != 0:
+                return_value = "!"
         case "down":
-            if cur_location[0] != 3:
-                return_value = '!'
+            if location[0] != 3:
+                return_value = "!"
         case "up":
-            if cur_location[1] != 1:
-                return_value = '!'
+            if location[1] != 1:
+                return_value = "!"
         case "task":
-            if cur_location == cur_task.location:
-                return_value = '!'
+            if location == BE.cur_task.location:
+                return_value = "!"
         case "get":
             # We will apply this added complexity later
             # in __main__.py
-            match cur_location:
+            match location:
                 case [0, 0]:
-                    return_value = '@'
+                    return_value = "@"
                 case [1, 1]:
-                    return_value = '#'
+                    return_value = "#"
                 case [2, 1]:
-                    if animal_exists is True:
-                        return_value = '&'
+                    if BE.animal_exists is True:
+                        return_value = "&"
         case "acts":
             match act:
                 case "sleep":
-                    if what_time == "Night" & cur_location == [1, 0]:
-                        return_value = 'Z'
+                    if BE.what_time == "Night" & BE.cur_location == [1, 0]:
+                        return_value = "Z"
                 case "ask":
-                    if done_task == False & cur_location == [0, 1]:
-                        return_value = '?'
+                    if BE.done_task == False & BE.cur_location == [0, 1]:
+                        return_value = "?"
                 case _:
                     if (
-                        check_act("get") != ' '
-                        |
-                        check_act("acts", "sleep") != ' '
-                        |
-                        check_act("acts", "ask") != ' '
-                        ):
-                        return_value = '!'
+                        check_act("get")
+                        != " " | check_act("acts", "sleep")
+                        != " " | check_act("acts", "ask")
+                        != " "
+                    ):
+                        return_value = "!"
         case "wait":
-            if wait_cooldown <= 0:
-                return_value = '!'
+            if BE.wait_cooldown <= 0:
+                return_value = "!"
         case _:
-            write_log("(Not Fatal) Invalid check_act call")
+            BE.write_log("(Not Fatal) Invalid check_act call")
     return return_value
+
 
 # - IN GAME SPRITES -
 
+
 def random_sprinkle(
-        elements: list, chance: int = 8, height: int = 3,
-        length: int = 64
-    ) -> list:
+    elements: list, chance: int = 8, height: int = 3, length: int = 64
+) -> list:
     """
     A random sprinkler
 
@@ -217,6 +223,12 @@ def random_sprinkle(
             output[i].append(elements[1] if randint(0, 10) > chance else elements[0])
     return output
 
+
+# ? Hey contributers! Should I add in a comment
+# ? for what the output could look like?
+# ? For some readability, I could add it in the docstring.
+
+
 def print_check_sprite(what: int) -> None:
     """
     This returns the check sprite
@@ -227,24 +239,25 @@ def print_check_sprite(what: int) -> None:
     It is standalone, you don't need to print() it
     """
     if what == 0:
-        sky_elements = [' ', '*']
+        sky_elements = [" ", "*"]
     else:
-        sky_elements = [':', ';']
+        sky_elements = [":", ";"]
     output = random_sprinkle(sky_elements, 9, 7, 64)
     if what == 0:
-        output[1][28:34] =   ".----."
-        output[2][27:35] =  "' .  ; '"
+        output[1][28:34] = ".----."
+        output[2][27:35] = "' .  ; '"
         output[3][26:36] = "| - () + |"
-        output[4][27:35] =  ". ( :  ."
-        output[5][28:34] =   "'----'"
+        output[4][27:35] = ". ( :  ."
+        output[5][28:34] = "'----'"
     else:
-        output[1][28:34] =   ";----;"
-        output[2][27:35] =  "'      '"
+        output[1][28:34] = ";----;"
+        output[2][27:35] = "'      '"
         output[3][26:36] = "| < () > |"
-        output[4][27:35] =  ".      ."
-        output[5][29:33] =    "----"
+        output[4][27:35] = ".      ."
+        output[5][29:33] = "----"
     for i in range(7):
         print("".join(output[i]))
+
 
 def print_sky(what: int, return_sprite: bool) -> None:
     """
@@ -279,9 +292,10 @@ def print_sky(what: int, return_sprite: bool) -> None:
                 else ("`" if randint(0, 10) > 8 else "'")
             )
     sprite = "".join(sky[0]) + "\n" + "".join(sky[1]) + "\n" + "".join(sky[2])
-    if return_sprite is True:
-        return sprite
-    print(sprite, end='')
+    if return_sprite is False:
+        print(sprite, end="")
+    return sprite
+
 
 # - MAP SPRITES - ( omfg this takes too long )
 
@@ -319,8 +333,9 @@ Cliff1_sprite: str = """
 
 location_sprites: list = [
     [Forest_Entrance_sprite, Campsite_sprite, Spawn_sprite, Cliff0_sprite],
-    [Altar_sprite, Small_Lake_sprite, Plains_sprite, Cliff1_sprite]
+    [Altar_sprite, Small_Lake_sprite, Plains_sprite, Cliff1_sprite],
 ]
+
 
 def fetch_main_acts() -> str:
     """
@@ -345,6 +360,7 @@ def fetch_main_acts() -> str:
     [!] <<- [  Menu  ]
 """
 
+
 def fetch_move_acts() -> str:
     """
     This returns the move acts menu
@@ -368,19 +384,30 @@ def fetch_move_acts() -> str:
     [ !? ] <<- [ Back ]
 """
 
+
 def fetch_fasttravel_acts() -> None:
     """
-    This returns the fat travel menu
+    This returns the fast-travel menu
 
     Note that this RETURNS a menu.
-    You will need to print() this so do not treat
-    this as a standalone function.
+
+    You will need to print() this.
+    So do not treat this as a standalone function.
     """
-    forest = "FE" if seen_locations[0][0] is True else "??"
+    seen = BE.seen_locations
+    forest = "FE" if seen[0][0] is True else "??"
+    camp = "CS" if seen[0][1] is True else "??"
+    spawn = "SP" if seen[0][2] is True else "??"
+    cliff0 = "C0" if seen[0][3] is True else "??"
+    altar = "AL" if seen[0][0] is True else "??"
+    lake = "LA" if seen[0][1] is True else "??"
+    plains = "PL" if seen[0][2] is True else "??"
+    cliff1 = "C1" if seen[0][3] is True else "??"
+    # I know, I was surprised it even lined up.
     return f"""
     <( FAST TRAVEL : )>
 
         (!) -> Fast Travel Consumes more stamina!
-        [ ({forest}) ] >-< [ (??) ] <-> [ (??) ] >-< [ (??) ]
-        [ (??) ] <-> [ (??) ] >-< [ (??) ] <-> [ (??) ]
+        [ ({forest}) ] >-< [ ({camp}) ] <-> [ ({spawn}) ] >-< [ ({cliff0}) ]
+        [ ({altar}) ] <-> [ ({lake}) ] >-< [ ({plains}) ] <-> [ ({cliff1}) ]
 """
