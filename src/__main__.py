@@ -25,7 +25,7 @@ def character_select_menu() -> None:
         BE.NEWBIE_STATS,
         BE.EXPERT_STATS,
         BE.SUSTAINER_STATS,
-        BE.fallen_stats,
+        BE.FALLEN_STATS,
     ]
     while True:
         G.clear()
