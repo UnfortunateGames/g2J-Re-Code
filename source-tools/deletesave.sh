@@ -1,4 +1,5 @@
 #!/bin/bash
 echo Removing __save__.txt...
+cd source-tools
 rm ../src/backend/saveFile/__save__.txt
 echo Success!

@@ -1,4 +1,4 @@
 echo off
-echo Compiling project to directory "out" with PyInstaller
-PyInstaller --onefile ../src/__main__.py --distpath ../out/
-echo Compiled to one executable at "out"
+pyinstaller --onefile ../src/__main__.py --name g2J-build.exe --distpath ../out
+del build/* g2J-build.spec
+rmdir build

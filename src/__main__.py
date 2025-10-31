@@ -14,6 +14,7 @@ def settings_menu() -> None:
     """
     while True:
         G.clear()
+        break
 
 
 def character_select_menu() -> None:
@@ -61,6 +62,7 @@ def game_menu() -> None:
         x = input(f"\n{' ' * 14}<(->> ").lower()
         match x:
             case "start":
+                # intro
                 continue
             case "continue":
                 if has_loaded is False:
@@ -70,8 +72,7 @@ def game_menu() -> None:
                     # start game
                     continue
             case "settings":
-                # settings menu
-                continue
+                settings_menu()
             case "characters":
                 character_select_menu()
             case "credits":

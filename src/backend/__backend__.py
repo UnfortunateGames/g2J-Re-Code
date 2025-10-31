@@ -92,12 +92,14 @@ TASK_LIST: list = [CHOP_TREES, PRAISE_ME, DONT_EAT, SACRIFICE, BAPTISM, CELEBRAT
 
 COW_ENEMY: BEC.Animal = BEC.Animal(
     name="Cow",
-    move_set={
-        "Instincts.",
-        BEC.Move("Ram", 0, 4, 0),
-        BEC.Move("Rest", 1, 8, 1),
-        BEC.Move("Kick", 0, 12, 2),
-    },
+    move_set=BEC.MoveSet(
+        name="Instincts.",
+        moves=[
+            BEC.Move("Ram", 0, 4, 0),
+            BEC.Move("Rest", 1, 8, 1),
+            BEC.Move("Kick", 0, 12, 2),
+        ]
+    ),
     stats={30},
     prize=2,
     meat=3,
@@ -105,12 +107,14 @@ COW_ENEMY: BEC.Animal = BEC.Animal(
 
 SHEEP_ENEMY: BEC.Animal = BEC.Animal(
     name="Cow",
-    move_set={
-        "Instincts.",
-        BEC.Move("Ram", 0, 2, 0),
-        BEC.Move("Rest", 1, 8, 0),
-        BEC.Move("Kick", 0, 10, 2),
-    },
+    move_set=BEC.MoveSet(
+        name="Instincts.",
+        moves=[
+            BEC.Move("Ram", 0, 2, 0),
+            BEC.Move("Rest", 1, 8, 0),
+            BEC.Move("Kick", 0, 10, 2),
+        ]
+    ),
     stats={35},
     prize=1,
     meat=2,
@@ -118,12 +122,14 @@ SHEEP_ENEMY: BEC.Animal = BEC.Animal(
 
 GOAT_ENEMY: BEC.Animal = BEC.Animal(
     name="Goat",
-    move_set={
-        "Instincts.",
-        BEC.Move("Kick", 0, 6, 1),
-        BEC.Move("Preperation", 1, 6, 0),
-        BEC.Move("Horn Ram", 0, 16, 3),
-    },
+    move_set=BEC.MoveSet(
+        name="Instincts.",
+        moves=[
+            BEC.Move("Kick", 0, 6, 1),
+            BEC.Move("Preperation", 1, 6, 0),
+            BEC.Move("Horn Ram", 0, 16, 3),
+        ]
+    ),
     stats={45},
     prize=3,
     meat=5,
@@ -139,12 +145,14 @@ NEWBIE_STATS: BEC.Character = BEC.Character(
     description="My first creation.",
     price=0,
     index=0,
-    move_set={
-        "Instincts.",
-        BEC.Move("Punch", 0, 2, 0),
-        BEC.Move("Kick", 0, 3, 1),
-        BEC.Move("Thrust", 0, 12, 4),
-    },
+    move_set=BEC.MoveSet(
+        name="Instincts.",
+        moves=[
+            BEC.Move("Punch", 0, 2, 0),
+            BEC.Move("Kick", 0, 3, 1),
+            BEC.Move("Thrust", 0, 12, 4),
+        ]
+    ),
 )
 
 EXPERT_STATS: BEC.Character = BEC.Character(
@@ -155,12 +163,14 @@ EXPERT_STATS: BEC.Character = BEC.Character(
     description="Long forgotten.",
     price=10,
     index=1,
-    move_set={
-        "Kung Fu.",
-        BEC.Move("Fist Hit", 0, 3, 0),
-        BEC.Move("Spin Kick", 0, 5, 1),
-        BEC.Move("Power Fist", 0, 16, 3),
-    },
+    move_set=BEC.MoveSet(
+        name="Kung Fu.",
+        moves=[
+            BEC.Move("Fist Hit", 0, 3, 0),
+            BEC.Move("Spin Kick", 0, 5, 1),
+            BEC.Move("Power Fist", 0, 16, 3),
+        ]
+    ),
 )
 
 SUSTAINER_STATS: BEC.Character = BEC.Character(
