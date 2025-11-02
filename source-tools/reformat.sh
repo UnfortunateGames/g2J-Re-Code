@@ -1,5 +1,4 @@
 #!/bin/bash
 echo Using Black to format project...
-cd source-tools
-black ../src/*
+black src/*
 echo Success!

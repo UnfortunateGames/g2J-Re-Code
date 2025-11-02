@@ -13,8 +13,18 @@ def settings_menu() -> None:
     This is the settings menu.
     """
     while True:
-        G.clear()
-        break
+        G.menu_scroll(S.settings_menu)
+        x = input(f"{" " * 14}<?->> ").lower()
+        match x:
+            case "keybinds":
+                ...
+            case "load save":
+                BE.load_save()
+            case "save game":
+                BE.save_game()
+            case _:
+                print(f"{" " * 16}{x} is not a valid option!")
+                input(f"{" " * 16}Press enter to continue...")
 
 
 def character_select_menu() -> None:
@@ -29,8 +39,9 @@ def character_select_menu() -> None:
         BE.FALLEN_STATS,
     ]
     while True:
-        G.clear()
-        print(G.logo + "\n")
+        character = character_list[cur_menu]
+        price = character.price
+        name = character.name
         G.menu_scroll(S.fetch_character_menu(character_list[cur_menu]))
         x = input(f"{' ' * 14}<?->> ").lower
         match x:
@@ -43,14 +54,28 @@ def character_select_menu() -> None:
                 if cur_menu < 0:
                     cur_menu = 3
             case "buy":
-                continue
+                if BE.bought_characters[cur_menu] is True:
+                    print(f"{" " * 16}Character is already bought!")
+                    input(f"{" " * 16}Press enter to continue...")
+                elif BE.badges < price:
+                    print(f"{" " * 16}You don't have enough badges!")
+                    input(f"{" " * 16}Press enter to continue...")
+                else:
+                    BE.badges -= price
+                    BE.bought_characters[cur_menu] = True
+                    print(f"{" " * 16}Successfully bought {name}!")
+                    input(f"{" " * 16}Press enter to continue...")
             case "equip":
                 if BE.bought_characters[cur_menu] is False:
-                    input(f"{' ' * 16}Character is not bought yet!")
+                    print(f"{' ' * 16}Character hasn't been bought yet!")
+                    input(f"{" " * 16}Press enter to continue...")
                 else:
                     BE.cur_stats = character_list[cur_menu]
             case "menu":
                 break
+            case _:
+                print(f"{" " * 16}{x} is not a valid option!")
+                input(f"{" " * 16}Press enter to continue...")
 
 
 def game_menu() -> None:

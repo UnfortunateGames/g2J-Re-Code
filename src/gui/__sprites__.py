@@ -1,6 +1,4 @@
-"""
-The sprite module containing the sprites and animations for the GUI
-"""
+"""The sprite module containing the sprites and animations for the GUI"""
 
 # Built-in Modules
 from random import randint
@@ -27,8 +25,7 @@ settings_menu: str = f"""
 {" " * 16}<( Settings : )>
 
 {" " * 16}  !? ->    Keybinds   ]
-{" " * 16}  _? -> Load Keybinds ]
-{" " * 16}  _@ ->   Load Game   ]
+{" " * 16}  _@ ->   Load Save   ]
 {" " * 16}  #> ->   Save Game   ]
 
 {" " * 16}() <- [ Back ]
@@ -231,7 +228,7 @@ def random_sprinkle(
 
 def print_check_sprite(what: int) -> None:
     """
-    This returns the check sprite
+    This prints the check sprite
 
     The parameters are exactly the same as print_sky()
     0 for night, 1 for day
@@ -242,7 +239,7 @@ def print_check_sprite(what: int) -> None:
         sky_elements = [" ", "*"]
     else:
         sky_elements = [":", ";"]
-    output = random_sprinkle(sky_elements, 9, 7, 64)
+    output = random_sprinkle(sky_elements, 9, 7)
     if what == 0:
         output[1][28:34] = ".----."
         output[2][27:35] = "' .  ; '"
@@ -259,7 +256,7 @@ def print_check_sprite(what: int) -> None:
         print("".join(output[i]))
 
 
-def print_sky(what: int, return_sprite: bool) -> None:
+def print_sky(what: int, print_sprite: bool) -> None:
     """
     This should create the illusion of a random sky.
 
@@ -281,7 +278,7 @@ def print_sky(what: int, return_sprite: bool) -> None:
         sky_elements = [" ", "."]
     else:
         sky_elements = [":", ";"]
-    sky = random_sprinkle(sky_elements, 8, 3, 64)
+    sky = random_sprinkle(sky_elements)
     sky[0][57:63] = ".';o'."
     sky[1][57:63] = "'.',.'"
     if what != 0:
@@ -292,47 +289,90 @@ def print_sky(what: int, return_sprite: bool) -> None:
                 else ("`" if randint(0, 10) > 8 else "'")
             )
     sprite = "".join(sky[0]) + "\n" + "".join(sky[1]) + "\n" + "".join(sky[2])
-    if return_sprite is False:
+    if print_sprite is False:
         print(sprite, end="")
     return sprite
 
 
 # - MAP SPRITES - ( omfg this takes too long )
 
-Forest_Entrance_sprite: str = """
 
-"""
+def get_forest_entrance_sprite() -> str:
+    """
+    This returns the Forest Entrance sprite.
+
+    #? Should I refactor all of these?
+    """
+    ground = [[], [], [], []]
+    ground = random_sprinkle(elements=['"', "'"], height=4)
+    ground[0][0:63] = "_" * 64
+    ground[0][0:15] = "/\\^./\\__./\\_/\\_."
+    ground[1][0:16] = "  \\\\  \\/ \\ \\  \\ \\"
+    ground[2][0:34] = "  \\\\  /  \\ /  \\ \\.--------  -     -"
+    ground[3][0:36] = "||| || |||| |||| |  .------   -     -"
+    sprite = (
+        "".join(ground[0])
+        + "\n"
+        + "".join(ground[1])
+        + "\n"
+        + "".join(ground[2])
+        + "\n"
+        + "".join(ground[3])
+    )
+    return sprite
+
 
 Campsite_sprite: str = """
-
+_____________________________________________________________________
+"      "  '   "      '    "    "    '    "    '    "     "    '   "
+  "      "  '   "      '    "    "    '    "    '    "     "    '   "
+   "  '   "      '    "    "    '    "    '    "     "    '   "   ' "
 """
 
 Spawn_sprite: str = """
-
+_____________________________________________________________________
+"      "  '   "      '    "    "    '    "    '    "     "    '   "
+  "      "  '   "      '    "    "    '    "    '    "     "    '   "
+   "  '   "      '    "    "    '    "    '    "     "    '   "   ' "
 """
 
 Cliff0_sprite: str = """
-
+_____________________________________________________________________
+"      "  '   "      '    "    "    '    "    '    "     "    '   "
+  "      "  '   "      '    "    "    '    "    '    "     "    '   "
+   "  '   "      '    "    "    '    "    '    "     "    '   "   ' "
 """
 
 Altar_sprite: str = """
-
+_____________________________________________________________________
+"      "  '   "      '    "    "    '    "    '    "     "    '   "
+  "      "  '   "      '    "    "    '    "    '    "     "    '   "
+   "  '   "      '    "    "    '    "    '    "     "    '   "   ' "
 """
 
 Small_Lake_sprite: str = """
-
+_____________________________________________________________________
+"      "  '   "      '    "    "    '    "    '    "     "    '   "
+  "      "  '   "      '    "    "    '    "    '    "     "    '   "
+   "  '   "      '    "    "    '    "    '    "     "    '   "   ' "
 """
 
 Plains_sprite: str = """
-
+_____________________________________________________________________
+"      "  '   "      '    "    "    '    "    '    "     "    '   "
+  "      "  '   "      '    "    "    '    "    '    "     "    '   "
+   "  '   "      '    "    "    '    "    '    "     "    '   "   ' "
 """
 
 Cliff1_sprite: str = """
-
+_____________________________________________________________________
+"      "  '   "      '    "    "    '    "    '    "     "    '   "
+  "      "  '   "      '    "    "    '    "    '    "     "    '   "
+   "  '   "      '    "    "    '    "    '    "     "    '   "   ' "
 """
 
 location_sprites: list = [
-    [Forest_Entrance_sprite, Campsite_sprite, Spawn_sprite, Cliff0_sprite],
+    [get_forest_entrance_sprite(), Campsite_sprite, Spawn_sprite, Cliff0_sprite],
     [Altar_sprite, Small_Lake_sprite, Plains_sprite, Cliff1_sprite],
 ]
 

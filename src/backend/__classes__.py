@@ -3,9 +3,11 @@ The classes of the backend
 
 I seperated them so you could read __backend__ properly <3
 """
+
 from random import randint
 
 # Goodluck.
+
 
 class Stats:
     """
@@ -18,14 +20,19 @@ class Stats:
     Current and Maximum variables are used to hold current and max values
     Drain variables are used to hold the amount of drain per time reset.
     """
+
     def __init__(
-        self, health: int = 0, stamina: int = 0,
-        drain_health: int = 0, drain_stamina: int = 0
-        ) -> None:
+        self,
+        health: int = 0,
+        stamina: int = 0,
+        drain_health: int = 0,
+        drain_stamina: int = 0,
+    ) -> None:
         self.cur_health = self.max_health = health
         self.cur_stamina = self.max_stamina = stamina
         self.drain_health = drain_health
         self.drain_stamina = drain_stamina
+
     # Heals the player
     def heal(self, health: int = None, stamina: int = None) -> None:
         """
@@ -49,6 +56,7 @@ class Stats:
             self.cur_stamina += stamina
             if self.cur_stamina > self.max_stamina:
                 self.cur_stamina = self.max_stamina
+
     # Similar to heal(), but drains stats instead
     def damage(self, health: int = None, stamina: int = None) -> None:
         """
@@ -68,6 +76,7 @@ class Stats:
         else:
             self.cur_stamina -= self.drain_stamina
 
+
 class Task:
     """
     The standard Task class.
@@ -76,17 +85,23 @@ class Task:
 
     Initializer is straight forward.
     """
+
     def __init__(
-        self, name: str, dialogue: list,
-        guide: list, prize: int, location: list,
-        drain: list
-        ) -> None:
+        self,
+        name: str,
+        dialogue: list,
+        guide: list,
+        prize: int,
+        location: list,
+        drain: list,
+    ) -> None:
         self.name = name
         self.dialogue = dialogue
         self.guide = guide
         self.prize = prize
         self.location = location
         self.drain = drain
+
     def do_task(self, heard, location, stats) -> list:
         """
         This is the logic for toggling the task.
@@ -103,6 +118,7 @@ class Task:
         stats.curStamina -= self.drain[1]
         return [True, self.prize]
 
+
 class Item:
     """
     A fairly simple Item class.
@@ -114,11 +130,11 @@ class Item:
     Description and Heal.
     # I don't have any ideas for another item lol #
     """
-    def __init__(
-        self, description: str, heal: list
-        ) -> None:
+
+    def __init__(self, description: str, heal: list) -> None:
         self.description = description
         self.heal = heal
+
     # Use Item function
     def use(self, stats) -> None:
         """
@@ -126,6 +142,7 @@ class Item:
         with the heal parameter given by the initializer.
         """
         stats.heal(self.heal[0], self.heal[1])
+
 
 class Move:
     """
@@ -139,18 +156,19 @@ class Move:
     mode = 0 for damage, 1 for heal
     damage_or_heal = The amount of damage or heal
     cooldown = The amount of turns before it can be used again
-    
+
     It also has a cur_cooldown variable to hold the current cooldown.
     """
+
     def __init__(
-        self, name: str, mode: int,
-        damage_or_heal: int, cooldown: int
-        ) -> None:
+        self, name: str, mode: int, damage_or_heal: int, cooldown: int
+    ) -> None:
         self.name = name
         self.mode = mode
         self.damage_or_heal = damage_or_heal
         self.cooldown = cooldown
         self.cur_cooldown = 0
+
     # Do move function
     def do(self, stats: Stats, itself: Stats):
         """
@@ -169,6 +187,7 @@ class Move:
         stats.curHealth -= self.damage_or_heal
         self.cur_cooldown = self.cooldown
 
+
 class MoveSet:
     """
     This class will contain 3 move classes
@@ -176,9 +195,11 @@ class MoveSet:
     Initializer will only contain one parameter:
     moves = A list of 3 move classes
     """
+
     def __init__(self, name: str, moves: list) -> None:
         self.name = name
         self.moves = moves
+
     def next_move(self) -> None:
         """
         This uses a for loop to iterate through the moves
@@ -188,6 +209,7 @@ class MoveSet:
         """
         for move in self.moves:
             move.cur_cooldown -= 1 if move.cur_cooldown > 0 else 0
+
 
 class Character:
     """
@@ -212,11 +234,18 @@ class Character:
 
     Any other modifications require direct access.
     """
+
     def __init__(
-        self, stats: Stats, name: str,
-        head: str, body: str, description: str,
-        price: int, index: int, move_set: MoveSet
-        ) -> None:
+        self,
+        stats: Stats,
+        name: str,
+        head: str,
+        body: str,
+        description: str,
+        price: int,
+        index: int,
+        move_set: MoveSet,
+    ) -> None:
         self.stats = stats
         self.name = name
         self.head = head
@@ -225,6 +254,7 @@ class Character:
         self.price = price
         self.index = index
         self.move_set = move_set
+
     def buy(self, badges, bought) -> None:
         """
         The buy function checks if the player has enough badges
@@ -238,6 +268,7 @@ class Character:
         if badges < self.price or bought[self.index] is True:
             return [False, badges]
         return [True, badges - self.price]
+
 
 class Animal:
     """
@@ -257,14 +288,15 @@ class Animal:
 
     ! I will add more battle features for more variety later!
     """
+
     def __init__(
-        self, name: str, move_set: MoveSet,
-        stats: Stats, prize: int, meat: int
-        ) -> None:
+        self, name: str, move_set: MoveSet, stats: Stats, prize: int, meat: int
+    ) -> None:
         self.name = name
         self.move_set = move_set
         self.stats = stats
         self.prize = [prize, meat]
+
     # Choice algorithm
     def choice(self) -> Move:
         """

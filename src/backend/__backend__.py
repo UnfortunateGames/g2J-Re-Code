@@ -1,7 +1,10 @@
 """The backend, containing all the in game variables and logic"""
 
+# Built-in modules
 from random import randint
 from time import strftime, localtime
+
+# External modules
 import backend.__classes__ as BEC
 
 # Do I really have to explain this to you?
@@ -98,7 +101,7 @@ COW_ENEMY: BEC.Animal = BEC.Animal(
             BEC.Move("Ram", 0, 4, 0),
             BEC.Move("Rest", 1, 8, 1),
             BEC.Move("Kick", 0, 12, 2),
-        ]
+        ],
     ),
     stats={30},
     prize=2,
@@ -113,7 +116,7 @@ SHEEP_ENEMY: BEC.Animal = BEC.Animal(
             BEC.Move("Ram", 0, 2, 0),
             BEC.Move("Rest", 1, 8, 0),
             BEC.Move("Kick", 0, 10, 2),
-        ]
+        ],
     ),
     stats={35},
     prize=1,
@@ -128,7 +131,7 @@ GOAT_ENEMY: BEC.Animal = BEC.Animal(
             BEC.Move("Kick", 0, 6, 1),
             BEC.Move("Preperation", 1, 6, 0),
             BEC.Move("Horn Ram", 0, 16, 3),
-        ]
+        ],
     ),
     stats={45},
     prize=3,
@@ -151,7 +154,7 @@ NEWBIE_STATS: BEC.Character = BEC.Character(
             BEC.Move("Punch", 0, 2, 0),
             BEC.Move("Kick", 0, 3, 1),
             BEC.Move("Thrust", 0, 12, 4),
-        ]
+        ],
     ),
 )
 
@@ -169,7 +172,7 @@ EXPERT_STATS: BEC.Character = BEC.Character(
             BEC.Move("Fist Hit", 0, 3, 0),
             BEC.Move("Spin Kick", 0, 5, 1),
             BEC.Move("Power Fist", 0, 16, 3),
-        ]
+        ],
     ),
 )
 
@@ -458,7 +461,7 @@ def save_game() -> None:
         raise e
 
 
-def load_game() -> list:
+def load_save() -> dict:
     """
     This loads the game from a file named "__save__.txt"
     Located in backend/saveFile
@@ -471,7 +474,7 @@ def load_game() -> list:
 
     It will return a dictionary.
     It's keywords are:
-    keybinds, bought, badges, location, curtask, gametime, 
+    keybinds, bought, badges, location, curtask, gametime,
     donetask, animalexists, deaths
 
     This saves a global statement
@@ -488,7 +491,7 @@ def load_game() -> list:
             "gametime": 0,
             "donetask": False,
             "animalexists": False,
-            "deaths": 0
+            "deaths": 0,
         }
         i = 0
         with open("src/backend/saveFile/__save__.txt", "r", encoding="utf-8") as file:
@@ -505,15 +508,13 @@ def load_game() -> list:
             cur_stats.name = lines[19].strip()
             cur_stats.stats.curHealth = int(lines[20].strip())
             cur_stats.stats.curStamina = int(lines[21].strip())
-            save_var["location"] = [
-                int(lines[22].strip()), int(lines[23].strip())
-            ]
+            save_var["location"] = [int(lines[22].strip()), int(lines[23].strip())]
             save_var["curtask"] = lines[24].strip()
             save_var["gametime"] = int(lines[25].strip())
             save_var["donetask"] = lines[26].strip() == "True"
             save_var["animalexists"] = lines[27].strip() == "True"
             save_var["deaths"] = int(lines[28].strip())
-            return save_var
+        return save_var
     except Exception as e:
         write_log("(FATAL) Unknown error loading game with exit code: " + e)
         raise e

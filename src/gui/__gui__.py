@@ -1,18 +1,13 @@
 """The GUI Module ccontaining all the GUI Logic and functions"""
 
+# Built-in modules
 from time import sleep
 from random import randint
 from os import system, name
+
+# External Modules
 from gui.__sprites__ import location_sprites, print_sky
-from backend.__backend__ import (
-    cur_location,
-    cur_stats,
-    what_time,
-    done_task,
-    heard_task,
-    cur_task,
-    write_log,
-)
+import backend.__backend__ as BE
 
 animation_speed: int = 3.5
 cur_menu: int = 0
@@ -65,7 +60,7 @@ def display_stats() -> None:
     This is a standalone function, So don't pass it to
     a print() statement, it will print it on it's own.
     """
-    stats = cur_stats.stats
+    stats = BE.cur_stats.stats
     chealth = stats.cur_health
     mhealth = stats.max_health
     cstamina = stats.cur_stamina
@@ -76,8 +71,8 @@ def display_stats() -> None:
     no_health = "-" * (10 - health_amount)
     stamina = "#" * stamina_amount
     no_stamina = "-" * (10 - stamina_amount)
-    head = cur_stats.head
-    body = cur_stats.body
+    head = BE.cur_stats.head
+    body = BE.cur_stats.body
     output = f"""
 .'.{head}.| Health  : {chealth} / {mhealth} | Hunger : |  //_- go 2 JAMBOREE - '.
 |::{body}.| Stamina : {cstamina} / {mstamina} | ## / ##  | /_ / A game made by:   |
@@ -86,7 +81,7 @@ def display_stats() -> None:
     print(output)
 
 
-def print_location_display(return_sprite: bool) -> str:
+def print_location_display(return_sprite: bool) -> None:
     """
     This is the logic for displaying the current location
     in the game.
@@ -96,12 +91,11 @@ def print_location_display(return_sprite: bool) -> str:
     """
     if return_sprite is True:
         return (
-            print_sky(0 if what_time == 0 else 1, True)
-            + location_sprites[cur_location[1]][cur_location[0]]
+            print_sky(0 if BE.what_time == 0 else 1, True)
+            + location_sprites[BE.cur_location[1]][BE.cur_location[0]]
         )
-    print_sky(0 if what_time == 0 else 1, False)
-    print(location_sprites[cur_location[1]][cur_location[0]])
-    return "the linter suggested to return something lol"
+    print_sky(0 if BE.what_time == 0 else 1, False)
+    print(location_sprites[BE.cur_location[1]][BE.cur_location[0]])
 
 
 def print_animation(message: str = "", centralize: bool = True) -> None:
@@ -149,12 +143,12 @@ def move_animation(speed: int = 1, debug: bool = False) -> None:
     coding.
     """
     legs = ["/ \\", "/<", "<|"]
-    head = cur_stats.head
-    body = cur_stats.body
+    head = BE.cur_stats.head
+    body = BE.cur_stats.body
     dots = 0
     delay = (animation_speed / 15) / speed
     if debug is True:
-        write_log("(Not Fatal) Move animation function on debug mode!")
+        BE.write_log("(Not Fatal) Move animation function on debug mode!")
     for i in range(15):
         clear()
         leg = i % 3
@@ -176,29 +170,29 @@ def move_animation(speed: int = 1, debug: bool = False) -> None:
         sleep(delay)
 
 
-def fetch_task_dialogue() -> str:
+def fetch_task_dialogue() -> list:
     """
     This fetches the task dialogue.
     and returns the said dialogue.
 
-    Note that this RETURNS a string.
-    Not print it, so do print it yourself.
+    Note that this RETURNS a list.
+    Use a special loop for this.
     """
-    if done_task is True:
+    if BE.done_task is True:
         return ["Your task is done.", "Go ahead and rest.", "Carry on."]
-    if heard_task is False:
+    if BE.heard_task is False:
         return [
             "Ah, you have come back.",
-            f"Your task is {cur_task.name}",
-            cur_task.guide[0],
-            cur_task.guide[1],
+            f"Your task is {BE.cur_task.name}",
+            BE.cur_task.guide[0],
+            BE.cur_task.guide[1],
             "Carry on.",
         ]
     return [
         "Have you forgotten?",
-        f"Your task is {cur_task.name}",
-        cur_task.guide[0],
-        cur_task.guide[1],
+        f"Your task is {BE.cur_task.name}",
+        BE.cur_task.guide[0],
+        BE.cur_task.guide[1],
         "Carry on.",
     ]
 
@@ -211,7 +205,7 @@ def fetch_random_dialogue(dialogue_type: str) -> str:
     """
     dialogue = []
     if dialogue_type == "task":
-        dialogue = [cur_task.dialogue[0], cur_task.dialogue[1]]
+        dialogue = [BE.cur_task.dialogue[0], BE.cur_task.dialogue[1]]
     if dialogue_type == "sleep":
         dialogue = ["Ah... Home sweet home...", "Nothing beats a good night's rest"]
     if dialogue_type == "wait":
