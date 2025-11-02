@@ -221,6 +221,8 @@ bought_characters: list = [True, False, False, False]
 badges: int = 0
 cur_stats: BEC.Character = NEWBIE_STATS
 
+has_loaded: bool = False
+
 cur_location: list = [0, 0]
 cur_animal: BEC.Animal = None
 cur_task: BEC.Task = None
@@ -469,8 +471,12 @@ def load_save() -> dict:
     It loads all essential backend variables
     Read the save_game function DOCSTRING for the structure
 
-    If it fails no failsafe is incurred
-    and raises the error for the python interpreter to handle
+    It first checks if the file exists or it has something inside.
+    If it doesn't exist or is empty, it will still run nonetheless.
+    As it doesn't need to load anything.
+
+    Else if an unknown error occurs no failsafe will be incurred
+    and it raises the error for the python interpreter to handle.
 
     It will return a dictionary.
     It's keywords are:
@@ -496,6 +502,9 @@ def load_save() -> dict:
         i = 0
         with open("src/backend/saveFile/__save__.txt", "r", encoding="utf-8") as file:
             lines = file.readlines()
+            if len(lines) < 29:
+                write_log("(Not Fatal) Save File is empty or corrupted, skipping load")
+                return {}
             for x in enumerate(keybind_list):
                 save_var["keybinds"].append([])
                 for y in enumerate(keybind_list[x]):
@@ -515,6 +524,9 @@ def load_save() -> dict:
             save_var["animalexists"] = lines[27].strip() == "True"
             save_var["deaths"] = int(lines[28].strip())
         return save_var
+    except FileNotFoundError:
+        write_log("(Not Fatal) Save File not found, skipping load")
+        return {}
     except Exception as e:
         write_log("(FATAL) Unknown error loading game with exit code: " + e)
         raise e

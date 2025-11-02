@@ -1,11 +1,48 @@
 """The main function of g2J-Recode"""
 
 from time import sleep
+from sys import exit as syxit
 import backend.__backend__ as BE
 import gui.__gui__ as G
 import gui.__sprites__ as S
 
-has_loaded: bool = False
+
+def keybind_menu() -> None:
+    """
+    This is the menu that sets all the keybinds
+    """
+    cur_menu = 0
+    keylist = [
+        ["move", "acts", "task", "wait", "bag"],
+        ["left", "right", "down", "up"],
+        ["sleep", "check", "ask", "get"],
+        ["back", "menu"],
+    ]
+    while True:
+        G.menu_scroll(S.keybind_change_menus[cur_menu])
+        x = input(f"{' ' * 14}<?!->> ").lower()
+        if x in keylist[cur_menu]:
+            setter = input(
+                f"{' ' * 15}Enter a keybind [Enter nothing to exit] -> "
+            ).lower()
+            if setter == "":
+                continue
+            idx = keylist[cur_menu].index(x)
+            if idx < len(BE.keybind_list[cur_menu]):
+                BE.keybind_list[cur_menu][idx] = setter
+                print(f"{' ' * 16}Set {x} -> {setter}")
+                input(f"{' ' * 16}Press enter to continue...")
+            else:
+                print(f"{" " * 16}An error occured, please check the log file.")
+                BE.write_log("(FATAL) Outdated keybind list!")
+                syxit(2)
+            continue
+        match x:
+            case "exit":
+                break
+            case _:
+                print(f"{' ' * 16}{x} is not a valid option!")
+                input(f"{' ' * 16}Press enter to continue...")
 
 
 def settings_menu() -> None:
@@ -17,11 +54,30 @@ def settings_menu() -> None:
         x = input(f"{" " * 14}<?->> ").lower()
         match x:
             case "keybinds":
-                ...
+                keybind_menu()
             case "load save":
-                BE.load_save()
+                save = BE.load_save()
+                if not save:
+                    print(
+                        f"{' ' * 16}Save file was either empty or missing.\n" \
+                        f"{' ' * 16}Plese check the log for more information."
+                    )
+                    input(f"{' ' * 16}Press enter to continue...")
+                    continue
+                BE.has_loaded = True
+                BE.keybind_list = save["keybinds"]
+                BE.bought_characters = save["bought"]
+                BE.badges = save["badges"]
+                BE.cur_location = save["location"]
+                BE.cur_task = save["curtask"]
+                BE.game_time = save["gametime"]
+                BE.done_task = save["donetask"]
+                BE.animal_exists = save["animalexists"]
+                BE.deaths = save["deaths"]
             case "save game":
                 BE.save_game()
+            case "back":
+                break
             case _:
                 print(f"{" " * 16}{x} is not a valid option!")
                 input(f"{" " * 16}Press enter to continue...")
@@ -43,13 +99,13 @@ def character_select_menu() -> None:
         price = character.price
         name = character.name
         G.menu_scroll(S.fetch_character_menu(character_list[cur_menu]))
-        x = input(f"{' ' * 14}<?->> ").lower
+        x = input(f"{' ' * 14}<?->> ").lower()
         match x:
-            case "left":
+            case "right":
                 cur_menu += 1
                 if cur_menu > 3:
                     cur_menu = 0
-            case "right":
+            case "left":
                 cur_menu -= 1
                 if cur_menu < 0:
                     cur_menu = 3
@@ -71,7 +127,7 @@ def character_select_menu() -> None:
                     input(f"{" " * 16}Press enter to continue...")
                 else:
                     BE.cur_stats = character_list[cur_menu]
-            case "menu":
+            case "back":
                 break
             case _:
                 print(f"{" " * 16}{x} is not a valid option!")
@@ -90,7 +146,7 @@ def game_menu() -> None:
                 # intro
                 continue
             case "continue":
-                if has_loaded is False:
+                if BE.has_loaded is False:
                     print(f"{' ' * 14}You haven't loaded a save yet!")
                     input(f"{' ' * 14}Press enter to continue...")
                 else:
