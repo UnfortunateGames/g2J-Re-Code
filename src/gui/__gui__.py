@@ -81,7 +81,7 @@ def display_stats() -> None:
     print(output)
 
 
-def print_location_display(return_sprite: bool) -> None:
+def print_location_display(return_sprite: bool = False) -> str:
     """
     This is the logic for displaying the current location
     in the game.
@@ -91,11 +91,12 @@ def print_location_display(return_sprite: bool) -> None:
     """
     if return_sprite is True:
         return (
-            print_sky(0 if BE.what_time == 0 else 1, True)
+            print_sky(0 if BE.what_time == 0 else 1, False)
             + location_sprites[BE.cur_location[1]][BE.cur_location[0]]
         )
-    print_sky(0 if BE.what_time == 0 else 1, False)
+    print_sky(0 if BE.what_time == 0 else 1, True)
     print(location_sprites[BE.cur_location[1]][BE.cur_location[0]])
+    return ""
 
 
 def print_animation(message: str = "", centralize: bool = True) -> None:

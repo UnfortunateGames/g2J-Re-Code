@@ -204,7 +204,7 @@ def check_act(what: str = None, act: str = None) -> str:
 
 
 def random_sprinkle(
-    elements: list, chance: int = 8, height: int = 3, length: int = 64
+    elements: list, chance: int = 10, height: int = 3, length: int = 64
 ) -> list:
     """
     A random sprinkler
@@ -215,12 +215,44 @@ def random_sprinkle(
     You should use this like:
     output = random_sprinkle(parameters)
     """
+    chance = chance % 11
     output = []
-    for i in range(height):
+    for i in range(0, height):
         output.append([])
-        for _ in range(length):
-            output[i].append(elements[1] if randint(0, 10) > chance else elements[0])
+        for _ in range(0, length):
+            rng = randint(0, 10)
+            output[i].append(
+                elements[2] if rng > chance * 0.95
+                else elements[1] if rng > chance * 0.8
+                else elements[0]
+            )
     return output
+
+
+def insert_slice(target: list, start: int, text: str) -> None:
+    """
+    This inserts a slice of string to a list
+
+    This is used for the random sprinkle method.
+    As for you a normal human, can't do math.
+    But a computer does! So why not let it do the work?
+    """
+    target[start:start + len(text)] = text
+
+
+def join_lists(list_of_lists: list) -> str:
+    """
+    This expects a list of structure:
+    [[], [], [] ...]
+    
+    And joins them to return their result of strings.
+    This is for the random_sprinkler method to create
+    the location sprites.
+    """
+    joined = ""
+    for strings in list_of_lists:
+        joined += "".join(strings) + "\n"
+    return joined
 
 
 # ? Hey contributers! Should I add in a comment
@@ -238,22 +270,22 @@ def print_check_sprite(what: int) -> None:
     It is standalone, you don't need to print() it
     """
     if what == 0:
-        sky_elements = [" ", "*"]
+        sky_elements = [" ", "*", "."]
     else:
-        sky_elements = [":", ";"]
+        sky_elements = [":", ":", ";"]
     output = random_sprinkle(sky_elements, 9, 7)
     if what == 0:
-        output[1][28:34] = ".----."
-        output[2][27:35] = "' .  ; '"
-        output[3][26:36] = "| - () + |"
-        output[4][27:35] = ". ( :  ."
-        output[5][28:34] = "'----'"
+        insert_slice(output[1], 28, ".----.")
+        insert_slice(output[2], 27, "' .  ; '")
+        insert_slice(output[3], 26, "| - () + |")
+        insert_slice(output[4], 27, ". ( :  .")
+        insert_slice(output[5], 28, "'----'")
     else:
-        output[1][28:34] = ";----;"
-        output[2][27:35] = "'      '"
-        output[3][26:36] = "| < () > |"
-        output[4][27:35] = ".      ."
-        output[5][29:33] = "----"
+        insert_slice(output[1], 28, ";----;")
+        insert_slice(output[2], 27, "'      '")
+        insert_slice(output[3], 26, "| < () > |")
+        insert_slice(output[4], 27, ".      .")
+        insert_slice(output[5], 29, "----")
     for i in range(7):
         print("".join(output[i]))
 
@@ -268,8 +300,8 @@ def print_sky(what: int, print_sprite: bool) -> None:
     The what parameter should be:
     0 if BE.what_time == "Night" else 1
 
-    The return_sprite parameter is self explanatory.
-    It returns the sprite instead if it's True
+    The print_sprite parameter is self explanatory.
+    It prints the sprite instead if it's True
 
     Or as configured in the intro,
     Whatever you want essentially.
@@ -277,21 +309,21 @@ def print_sky(what: int, print_sprite: bool) -> None:
     """
     sky = [[], [], []]
     if what == 0:
-        sky_elements = [" ", "."]
+        sky_elements = [" ", ".", "*"]
     else:
-        sky_elements = [":", ";"]
+        sky_elements = [":", ";", ":"]
     sky = random_sprinkle(sky_elements)
     sky[0][57:63] = ".';o'."
     sky[1][57:63] = "'.',.'"
     if what != 0:
-        for i in range(64):
+        for i in range(63):
             sky[2][i] = (
                 (";" if randint(0, 10) > 8 else ":")
                 if i % 2 == 1
                 else ("`" if randint(0, 10) > 8 else "'")
             )
-    sprite = "".join(sky[0]) + "\n" + "".join(sky[1]) + "\n" + "".join(sky[2])
-    if print_sprite is False:
+    sprite = join_lists(sky)
+    if print_sprite is True:
         print(sprite, end="")
     return sprite
 
@@ -300,36 +332,68 @@ def print_sky(what: int, print_sprite: bool) -> None:
 
 
 def get_forest_entrance_sprite() -> str:
-    """
+    r"""
     This returns the Forest Entrance sprite.
 
-    #? Should I refactor all of these?
+    #! I'll rework this don't worry... or not...
+
+    I'm sorry okay? Is that what you want?
+    I should maybe remove this small feature anyways...
+
+    This returns an output of:
+    /\^./\__./\_/\_.________________________________________________
+      \\  \/ \ \  \ \                   '      "                  ' 
+      \\  /  \ /  \ \.--------  -     -       "        '  "      '  
+    ||| || |||| |||| |  .------   -     - ''   "   '   "'     '  "  
     """
     ground = [[], [], [], []]
-    ground = random_sprinkle(elements=['"', "'"], height=4)
-    ground[0][0:63] = "_" * 64
-    ground[0][0:15] = "/\\^./\\__./\\_/\\_."
-    ground[1][0:16] = "  \\\\  \\/ \\ \\  \\ \\"
-    ground[2][0:34] = "  \\\\  /  \\ /  \\ \\.--------  -     -"
-    ground[3][0:36] = "||| || |||| |||| |  .------   -     -"
-    sprite = (
-        "".join(ground[0])
-        + "\n"
-        + "".join(ground[1])
-        + "\n"
-        + "".join(ground[2])
-        + "\n"
-        + "".join(ground[3])
-    )
+    ground = random_sprinkle(elements=[' ', '"', "'"], height=4)
+    insert_slice(ground[0], 0, "_" * 64)
+    insert_slice(ground[0], 0, "/\\^./\\__./\\_/\\_.")
+    insert_slice(ground[1], 0, "  \\\\  \\/ \\ \\  \\ \\")
+    insert_slice(ground[2], 0, "  \\\\  /  \\ /  \\ \\.--------  -     -")
+    insert_slice(ground[3], 0, "||| || |||| |||| |  .------   -     -")
+    sprite = join_lists(ground)
     return sprite
 
 
-Campsite_sprite: str = """
-_____________________________________________________________________
-"      "  '   "      '    "    "    '    "    '    "     "    '   "
-  "      "  '   "      '    "    "    '    "    '    "     "    '   "
-   "  '   "      '    "    "    '    "    '    "     "    '   "   ' "
-"""
+def get_campsite_sprite() -> None:
+    r"""
+    This returns the Campsite sprite.
+
+    Goodluck.
+
+    This returns an output of:
+    ______.-------.______,___'____________/\__^__/\_____/\__________
+       ' / [  ] /||\    '  ' .    " "    /  \/ \/  \./\/  \ '  ""  '
+        /______/_||_\     ('./ '' ' "- ."/  \ | /  \ \ \  \'.-------
+    ' "   "'"  '    "    ./|\.     '-. "  ||"' ' ||'   \||  |  .----
+    """
+    ground = [[], [], [], []]
+    ground = random_sprinkle(elements=[' ', '"', "'"], height=4)
+    insert_slice(ground[0], 0, "_" * 64)
+    insert_slice(ground[0], 6, ".-------.")
+    insert_slice(ground[0], 21, ",___'")
+    insert_slice(ground[0], 38, "/\\__^__/\\_____/\\")
+    insert_slice(ground[1], 5, "/ [  ] /||\\")
+    insert_slice(ground[1], 20, "'  ' .")
+    insert_slice(ground[1], 37, "/  \\/ \\/  \\./\\/  \\")
+    insert_slice(ground[2], 4, "/______/_||_\\")
+    insert_slice(ground[2], 22, "('./")
+    ground[2][33] = "-"
+    ground[2][35] = "."
+    insert_slice(ground[2], 37, "/  \\")
+    ground[2][42] = "|"
+    insert_slice(ground[2], 44, "/  \\ \\ \\  \\")
+    insert_slice(ground[2], 56, ".-------")
+    insert_slice(ground[3], 21, "./|\\.")
+    insert_slice(ground[3], 32, "-.")
+    insert_slice(ground[3], 38, "||")
+    insert_slice(ground[3], 45, "||")
+    insert_slice(ground[3], 51, "\\||")
+    insert_slice(ground[3], 56, "|  .----")
+    sprite = join_lists(ground)
+    return sprite
 
 Spawn_sprite: str = """
 _____________________________________________________________________
@@ -374,7 +438,7 @@ _____________________________________________________________________
 """
 
 location_sprites: list = [
-    [get_forest_entrance_sprite(), Campsite_sprite, Spawn_sprite, Cliff0_sprite],
+    [get_forest_entrance_sprite(), get_campsite_sprite(), Spawn_sprite, Cliff0_sprite],
     [Altar_sprite, Small_Lake_sprite, Plains_sprite, Cliff1_sprite],
 ]
 
@@ -384,7 +448,7 @@ def fetch_main_acts() -> str:
     This returns a main acts menu.
 
     Note that this RETURNS a menu.
-    You will need to print() this so do not treat
+    You will need to act_scroll() this so do not treat
     this as a standalone function.
     """
     acts = check_act("acts")
@@ -408,7 +472,7 @@ def fetch_move_acts() -> str:
     This returns the move acts menu
 
     Note that this RETURNS a menu.
-    You will need to print() this so do not treat
+    You will need to act_scroll() this so do not treat
     this as a standalone function.
     """
     left = check_act("left")
@@ -433,7 +497,7 @@ def fetch_fasttravel_acts() -> None:
 
     Note that this RETURNS a menu.
 
-    You will need to print() this.
+    You will need to act_scroll() this.
     So do not treat this as a standalone function.
     """
     seen = BE.seen_locations
