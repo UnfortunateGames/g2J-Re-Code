@@ -218,6 +218,7 @@ FALLEN_STATS: BEC.Character = BEC.Character(
 # False = Not Bought | True = Bought
 bought_characters: list = [True, False, False, False]
 
+name: str = "Player"
 badges: int = 0
 cur_stats: BEC.Character = NEWBIE_STATS
 
@@ -441,6 +442,7 @@ def save_game() -> None:
                     file.write(f"{keybind_list[x][y]}\n")
             for x in bought_characters:
                 file.write(f"{x}\n")
+            file.write(f"{name}\n")
             file.write(f"{badges}\n")
             file.write(f"{cur_stats.index}\n")
             file.write(f"{cur_stats.name}\n")
@@ -491,6 +493,7 @@ def load_save() -> dict:
         save_var = {
             "keybinds": [],
             "bought": [],
+            "name": "",
             "badges": 0,
             "location": [],
             "curtask": False,
@@ -512,17 +515,17 @@ def load_save() -> dict:
                     i += 1
             for z in range(4):
                 save_var["bought"][z] = lines[z + 14].strip() == "True"
-            save_var["badges"] = int(lines[17].strip())
-            cur_stats.index = int(lines[18].strip())
-            cur_stats.name = lines[19].strip()
-            cur_stats.stats.curHealth = int(lines[20].strip())
-            cur_stats.stats.curStamina = int(lines[21].strip())
-            save_var["location"] = [int(lines[22].strip()), int(lines[23].strip())]
-            save_var["curtask"] = lines[24].strip()
-            save_var["gametime"] = int(lines[25].strip())
-            save_var["donetask"] = lines[26].strip() == "True"
-            save_var["animalexists"] = lines[27].strip() == "True"
-            save_var["deaths"] = int(lines[28].strip())
+            save_var["badges"] = int(lines[18].strip())
+            cur_stats.index = int(lines[189].strip())
+            cur_stats.name = lines[20].strip()
+            cur_stats.stats.curHealth = int(lines[21].strip())
+            cur_stats.stats.curStamina = int(lines[22].strip())
+            save_var["location"] = [int(lines[23].strip()), int(lines[24].strip())]
+            save_var["curtask"] = lines[25].strip()
+            save_var["gametime"] = int(lines[26].strip())
+            save_var["donetask"] = lines[27].strip() == "True"
+            save_var["animalexists"] = lines[28].strip() == "True"
+            save_var["deaths"] = int(lines[29].strip())
         return save_var
     except FileNotFoundError:
         write_log("(Not Fatal) Save File not found, skipping load")

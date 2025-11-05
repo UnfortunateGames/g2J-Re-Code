@@ -222,8 +222,10 @@ def random_sprinkle(
         for _ in range(0, length):
             rng = randint(0, 10)
             output[i].append(
-                elements[2] if rng > chance * 0.95
-                else elements[1] if rng > chance * 0.8
+                elements[2]
+                if rng > chance * 0.95
+                else elements[1]
+                if rng > chance * 0.8
                 else elements[0]
             )
     return output
@@ -237,14 +239,14 @@ def insert_slice(target: list, start: int, text: str) -> None:
     As for you a normal human, can't do math.
     But a computer does! So why not let it do the work?
     """
-    target[start:start + len(text)] = text
+    target[start : start + len(text)] = text
 
 
 def join_lists(list_of_lists: list) -> str:
     """
     This expects a list of structure:
     [[], [], [] ...]
-    
+
     And joins them to return their result of strings.
     This is for the random_sprinkler method to create
     the location sprites.
@@ -342,12 +344,12 @@ def get_forest_entrance_sprite() -> str:
 
     This returns an output of:
     /\^./\__./\_/\_.________________________________________________
-      \\  \/ \ \  \ \                   '      "                  ' 
-      \\  /  \ /  \ \.--------  -     -       "        '  "      '  
-    ||| || |||| |||| |  .------   -     - ''   "   '   "'     '  "  
+      \\  \/ \ \  \ \                   '      "                  '
+      \\  /  \ /  \ \.--------  -     -       "        '  "      '
+    ||| || |||| |||| |  .------   -     - ''   "   '   "'     '  "
     """
     ground = [[], [], [], []]
-    ground = random_sprinkle(elements=[' ', '"', "'"], height=4)
+    ground = random_sprinkle(elements=[" ", '"', "'"], height=4)
     insert_slice(ground[0], 0, "_" * 64)
     insert_slice(ground[0], 0, "/\\^./\\__./\\_/\\_.")
     insert_slice(ground[1], 0, "  \\\\  \\/ \\ \\  \\ \\")
@@ -370,7 +372,7 @@ def get_campsite_sprite() -> None:
     ' "   "'"  '    "    ./|\.     '-. "  ||"' ' ||'   \||  |  .----
     """
     ground = [[], [], [], []]
-    ground = random_sprinkle(elements=[' ', '"', "'"], height=4)
+    ground = random_sprinkle(elements=[" ", '"', "'"], height=4)
     insert_slice(ground[0], 0, "_" * 64)
     insert_slice(ground[0], 6, ".-------.")
     insert_slice(ground[0], 21, ",___'")
@@ -394,6 +396,7 @@ def get_campsite_sprite() -> None:
     insert_slice(ground[3], 56, "|  .----")
     sprite = join_lists(ground)
     return sprite
+
 
 Spawn_sprite: str = """
 _____________________________________________________________________

@@ -13,11 +13,11 @@ animation_speed: int = 3.5
 cur_menu: int = 0
 
 logo: str = f"""
-{' ' * 16}    '.~~-go-2-~~-~~-~~-~~-~~.'
-{' ' * 16}.   --. _ . . _  _  _  __ __   .
-{' ' * 16}."= , ||-||v||-'| ||-'|- |-  =".
-{' ' * 16} "= '_'| || ||_''_'| )'__'__ ="
-{' ' * 16}    '-._Made by : ESplash_.-'
+{" " * 16}    '.~~-go-2-~~-~~-~~-~~-~~.'
+{" " * 16}.   --. _ . . _  _  _  __ __   .
+{" " * 16}."= , ||-||v||-'| ||-'|- |-  =".
+{" " * 16} "= '_'| || ||_''_'| )'__'__ ="
+{" " * 16}    '-._Made by : ESplash_.-'
 """
 
 
@@ -112,6 +112,7 @@ def print_animation(message: str = "", centralize: bool = True) -> None:
         print(char, end="", flush=True)
         sleep(delay)
         delay += delay_amount
+    print()
 
 
 def centralize_print(message: str) -> None:
@@ -160,13 +161,13 @@ def move_animation(speed: int = 1, debug: bool = False) -> None:
         # One print call is all it takes
         print(
             i + "\n" if debug is True else "\n",
-            f"\n\n{' '* 25}_0_{' ' * 11}_0_\n",
-            f"{' '* 24}|/|{'~' * 11}|/|\n",
+            f"\n\n{' ' * 25}_0_{' ' * 11}_0_\n",
+            f"{' ' * 24}|/|{'~' * 11}|/|\n",
             f"\n{(' ' * 32) + head}\n{(' ' * 32) + body}\n",
             f"{(' ' * 31) + legs[leg]}\n",
             f"{' ' * 28}Moving{'.' * dots}\n",
-            f"\n{' '* 25}|/|{'~' * 11}|/|\n",
-            f"{' '* 24}'0'{' ' * 11}'0'",
+            f"\n{' ' * 25}|/|{'~' * 11}|/|\n",
+            f"{' ' * 24}'0'{' ' * 11}'0'",
         )
         sleep(delay)
 

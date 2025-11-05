@@ -20,6 +20,10 @@ There's a **lot** of *things* here to help you!
 
 > Remember to do this since you might leak your saves lol
 
+- A linter
+
+> For all your garbage code to be removed!
+
 - And a reformatter!
 
 > Cause I suck at programming, though idk if you'll need this
@@ -29,7 +33,7 @@ There's a **lot** of *things* here to help you!
 ## What do I need?
 
 For now it only needs **2 external Python modules**:
-*PyInstaller*, and *Black*.
+*PyInstaller*, and *Ruff*.
 
 It should be *easy* nonetheless, as installing it should be no deal.
 
@@ -38,7 +42,7 @@ For **Windows**:
 > Pretty simple.
 
 ```sh
-pip install pyinstaller black
+pip install pyinstaller ruff
 ```
 
 For **Linux** and **MacOS**:
@@ -61,7 +65,7 @@ source venv/bin/activate
 > Then install via pip
 
 ```sh
-pip install pyinstaller black
+pip install pyinstaller ruff
 ```
 
 > Optionally for Linux
@@ -69,14 +73,18 @@ pip install pyinstaller black
 
 ```sh
 # For Debian based systems:
-sudo apt install python3-black
+sudo apt install python3-ruff
 
 # For Arch Systems: (u use arch btw)
-sudo pacman -S black
+sudo pacman -S ruff
 
 # RedHat also has the same package:
-sudo dnf install python3-black
+sudo dnf install python3-ruff
 ```
+
+> Unfortunately there is no PyInstaller package to my knowledge
+> As i use arch btw. I will update this README accordingly if I find any.
+> Or if you (Yes, you!) contributors, pull request some.
 
 ## For usage
 
