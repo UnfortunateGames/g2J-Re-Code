@@ -5,7 +5,7 @@ from random import randint
 
 # External Modules
 from backend import __backend__ as BE
-from backend.__backend__ import keybind_list as KBL
+from backend.__backend__ import key_bind_list as KBL
 from backend.__classes__ import Character
 
 # - MENU SPRITES -
@@ -40,8 +40,10 @@ credit_menu: str = f"""
 {" " * 16}() <- [ Back ]
 """
 
-keybind_change_menus: list = [
-    f"""
+
+def fetch_key_bind_menus() -> list:
+    return [
+        f"""
 {" " * 16}<( KeyBinds : )>
 
 {" " * 16} <-[ '<' ] | [ '>' ]->
@@ -55,7 +57,7 @@ keybind_change_menus: list = [
 
 {" " * 16}() <- [ Exit ]
 """,
-    f"""
+        f"""
 {" " * 16}<( KeyBinds : )>
 
 {" " * 16}?> Move Keybinds )
@@ -66,7 +68,7 @@ keybind_change_menus: list = [
 
 {" " * 16}() <- [ Exit ]
 """,
-    f"""
+        f"""
 {" " * 16}<( KeyBinds : )>
 
 {" " * 16}?> Acts Keybinds )
@@ -77,7 +79,7 @@ keybind_change_menus: list = [
 
 {" " * 16}() <- [ Exit ]
 """,
-    f"""
+        f"""
 {" " * 16}<( KeyBinds : )>
 
 {" " * 16}?> Misc. Keybinds )
@@ -86,7 +88,22 @@ keybind_change_menus: list = [
 
 {" " * 16}() <- [ Exit ]
 """,
-]
+    ]
+
+
+def fetch_extra_settings() -> str:
+    """
+    This returns the extra settings.
+    Turned into a function for the dynamic variables.
+    """
+    return f"""
+{" " * 16}<( Extra Settings : )>
+
+{" " * 16} >> -> Print Speed    : {BE.animation_speed:.2f}
+{" " * 16} ?< -> Move Animation : {"Yes" if BE.do_move_anim is True else "No"}
+
+{" " * 16}() <- [ Back ]
+"""
 
 
 def fetch_character_menu(character: Character) -> str:
@@ -193,7 +210,7 @@ def check_act(what: str = None, act: str = None) -> str:
                     ):
                         return_value = "!"
         case "wait":
-            if BE.wait_cooldown <= 0:
+            if BE.wait_cool_down <= 0:
                 return_value = "!"
         case _:
             BE.write_log("(Not Fatal) Invalid check_act call")
@@ -399,45 +416,45 @@ def get_campsite_sprite() -> None:
 
 
 Spawn_sprite: str = """
-_____________________________________________________________________
-"      "  '   "      '    "    "    '    "    '    "     "    '   "
-  "      "  '   "      '    "    "    '    "    '    "     "    '   "
-   "  '   "      '    "    "    '    "    '    "     "    '   "   ' "
+________________________________________________________________
+"      "  '   "      '    "    "    '    "    '    "     "    ' 
+  "      "  '   "      '    "    "    '    "    '    "     "    
+   "  '   "      '    "    "    '    "    '    "     "    '   " 
 """
 
 Cliff0_sprite: str = """
-_____________________________________________________________________
-"      "  '   "      '    "    "    '    "    '    "     "    '   "
-  "      "  '   "      '    "    "    '    "    '    "     "    '   "
-   "  '   "      '    "    "    '    "    '    "     "    '   "   ' "
+________________________________________________________________
+"      "  '   "      '    "    "    '    "    '    "     "    ' 
+  "      "  '   "      '    "    "    '    "    '    "     "    
+   "  '   "      '    "    "    '    "    '    "     "    '   " 
 """
 
 Altar_sprite: str = """
-_____________________________________________________________________
-"      "  '   "      '    "    "    '    "    '    "     "    '   "
-  "      "  '   "      '    "    "    '    "    '    "     "    '   "
-   "  '   "      '    "    "    '    "    '    "     "    '   "   ' "
+________________________________________________________________
+"      "  '   "      '    "    "    '    "    '    "     "    ' 
+  "      "  '   "      '    "    "    '    "    '    "     "    
+   "  '   "      '    "    "    '    "    '    "     "    '   " 
 """
 
 Small_Lake_sprite: str = """
-_____________________________________________________________________
-"      "  '   "      '    "    "    '    "    '    "     "    '   "
-  "      "  '   "      '    "    "    '    "    '    "     "    '   "
-   "  '   "      '    "    "    '    "    '    "     "    '   "   ' "
+________________________________________________________________
+"      "  '   "      '    "    "    '    "    '    "     "    ' 
+  "      "  '   "      '    "    "    '    "    '    "     "    
+   "  '   "      '    "    "    '    "    '    "     "    '   " 
 """
 
 Plains_sprite: str = """
-_____________________________________________________________________
-"      "  '   "      '    "    "    '    "    '    "     "    '   "
-  "      "  '   "      '    "    "    '    "    '    "     "    '   "
-   "  '   "      '    "    "    '    "    '    "     "    '   "   ' "
+________________________________________________________________
+"      "  '   "      '    "    "    '    "    '    "     "    ' 
+  "      "  '   "      '    "    "    '    "    '    "     "    
+   "  '   "      '    "    "    '    "    '    "     "    '   " 
 """
 
 Cliff1_sprite: str = """
-_____________________________________________________________________
-"      "  '   "      '    "    "    '    "    '    "     "    '   "
-  "      "  '   "      '    "    "    '    "    '    "     "    '   "
-   "  '   "      '    "    "    '    "    '    "     "    '   "   ' "
+________________________________________________________________
+"      "  '   "      '    "    "    '    "    '    "     "    ' 
+  "      "  '   "      '    "    "    '    "    '    "     "    
+   "  '   "      '    "    "    '    "    '    "     "    '   " 
 """
 
 location_sprites: list = [

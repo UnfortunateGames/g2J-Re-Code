@@ -19,10 +19,10 @@ def game_intro() -> None:
     The seemingly long intro to the game.
     """
 
-    def he_speaks(message: str = "", withloc: bool = False) -> None:
+    def he_speaks(message: str = "", with_loc: bool = False) -> None:
         G.clear()
         print("\n\n\n\n")
-        if withloc is True:
+        if with_loc is True:
             G.print_location_display()
         G.print_animation(message)
 
@@ -50,11 +50,11 @@ def game_intro() -> None:
     G.clear()
     G.print_animation(G.print_location_display(True))
     sleep(2)
-    he_speaks("This is my relam.", True)
+    he_speaks("This is my realm.", True)
     sleep(1)
     he_speaks("For you to wander, and explore.", True)
     sleep(2)
-    he_speaks("Don't be a strayed, as I am here.", True)
+    he_speaks("Don't be astray, as I am here.", True)
     sleep(1)
     he_speaks(f"You are not ready, {BE.name}.", True)
     sleep(1)
@@ -77,12 +77,12 @@ def main_acts() -> None:
     """
     G.print_location_display()
     G.act_scroll(S.fetch_main_acts())
-    x = input(f"\n{' ' * 14}<!->>").lower()
-    match x:
+    USER_INPUT = input(f"\n{' ' * 14}<!->>").lower()
+    match USER_INPUT:
         case "":
             ...
         case _:
-            print(f"\n{' ' * 16}What is {x}? I don't know that.")
+            print(f"\n{' ' * 16}What is {USER_INPUT}? I don't know that.")
             input(f"{' ' * 16}Press enter to continue...")
     main_acts()
 
@@ -90,45 +90,54 @@ def main_acts() -> None:
 # - MENU LOGIC -
 
 
-def keybind_menu() -> None:
+def change_key_bind(key_list: list, menu: int, user_input: str) -> None:
+    setter = input(
+        f"\n{' ' * 15}Enter a key bind [Enter nothing to exit] -> "
+    ).lower()
+    if setter == "":
+        key_bind_menu()
+        return
+    idx = key_list[menu].index(user_input)
+    if idx < len(BE.key_bind_list[menu]):
+        BE.key_bind_list[menu][idx] = setter
+        print(f"\n{' ' * 16}Set {user_input} -> {setter}")
+        input(f"{' ' * 16}Press enter to continue...")
+    else:
+        print(f"{' ' * 16}An error occurred, please check the log file.")
+        BE.write_log(
+            "(FATAL) Outdated key bind list! Please open an issue in our github."
+        )
+        syxit(2)
+    key_bind_menu()
+
+
+def key_bind_menu(cur_menu: int = 0) -> None:
     """
-    This is the menu that sets all the keybinds
+    This is the menu that sets all the key binds
     """
-    cur_menu = 0
-    keylist = [
+    KEY_LIST = [
         ["move", "acts", "task", "wait", "bag"],
         ["left", "right", "down", "up"],
         ["sleep", "check", "ask", "get"],
         ["back", "menu"],
     ]
-    G.menu_scroll(S.keybind_change_menus[cur_menu])
-    x = input(f"{' ' * 14}<?!->> ").lower()
-    if x in keylist[cur_menu]:
-        setter = input(
-            f"\n{' ' * 15}Enter a keybind [Enter nothing to exit] -> "
-        ).lower()
-        if setter == "":
-            keybind_menu()
-            return
-        idx = keylist[cur_menu].index(x)
-        if idx < len(BE.keybind_list[cur_menu]):
-            BE.keybind_list[cur_menu][idx] = setter
-            print(f"\n{' ' * 16}Set {x} -> {setter}")
-            input(f"{' ' * 16}Press enter to continue...")
-        else:
-            print(f"{' ' * 16}An error occured, please check the log file.")
-            BE.write_log(
-                "(FATAL) Outdated keybind list! Please open an issue in our github."
-            )
-            syxit(2)
-        keybind_menu()
+    G.menu_scroll(S.fetch_key_bind_menus()[cur_menu])
+    USER_INPUT = input(f"{' ' * 14}<?!->> ").lower()
+    if USER_INPUT in KEY_LIST[cur_menu]:
+        change_key_bind(KEY_LIST, cur_menu, USER_INPUT)
         return
-    match x:
+    match USER_INPUT:
+        case '<':
+            cur_menu -= 1
+        case '>':
+            cur_menu += 1
         case "exit":
             settings_menu()
+            return
         case _:
-            print(f"\n{' ' * 16}{x} is not a valid option!")
+            print(f"\n{' ' * 16}{USER_INPUT} is not a valid option!")
             input(f"{' ' * 16}Press enter to continue...")
+    key_bind_menu(cur_menu)
 
 
 def load_logic(save: dict) -> None:
@@ -141,29 +150,57 @@ def load_logic(save: dict) -> None:
     if not save:
         print(
             f"\n{' ' * 16}Save file was either empty or missing.\n"
-            f"{' ' * 16}Plese check the log for more information."
+            f"{' ' * 16}Please check the log for more information."
         )
         input(f"{' ' * 16}Press enter to continue...")
         return
     BE.has_loaded = True
-    BE.keybind_list = save["keybinds"]
+    BE.key_bind_list = save["key_binds"]
     BE.bought_characters = save["bought"]
     BE.badges = save["badges"]
     BE.cur_location = save["location"]
-    BE.cur_task = save["curtask"]
-    BE.game_time = save["gametime"]
-    BE.done_task = save["donetask"]
-    BE.animal_exists = save["animalexists"]
+    BE.cur_task = save["cur_task"]
+    BE.game_time = save["game_time"]
+    BE.done_task = save["done_task"]
+    BE.animal_exists = save["animal_exists"]
     BE.deaths = save["deaths"]
+
+
+def set_animation_speed() -> None:
+    print(f"\n{' ' * 15}Enter the animation speed you'd like [Enter nothing to exit]")
+    print(f"{' ' * 15}1 second minimum, 6 seconds maximum")
+    setter = input(f"{' ' * 16}-> ")
+    if setter == "":
+        return
+    setter = float(setter)
+    if setter < 1:
+        setter = 1
+    elif setter > 6:
+        setter = 6
+    BE.animation_speed = setter
 
 
 def extra_settings() -> None:
     """
     This manages in-game settings
-    As for Animation speed, and difficulty.
+    As for Animation speed, and move animation toggle.
 
     Yeah... that's it... for now?
     """
+    G.menu_scroll(S.fetch_extra_settings)
+    USER_INPUT = input(f"{' ' * 14}<?->> ").lower()
+    match USER_INPUT:
+        case "print speed":
+            set_animation_speed()
+        case "move animation":
+            BE.do_move_anim = True if BE.do_move_anim is False else False
+        case "back":
+            settings_menu()
+            return
+        case _:
+            print(f"\n{' ' * 16}{USER_INPUT} is not a valid option!")
+            input(f"{' ' * 16}Press enter to continue...")
+    extra_settings()
 
 
 def settings_menu() -> None:
@@ -171,10 +208,10 @@ def settings_menu() -> None:
     This is the settings menu.
     """
     G.menu_scroll(S.settings_menu)
-    x = input(f"{' ' * 14}<?->> ").lower()
-    match x:
-        case "keybinds":
-            keybind_menu()
+    user_input = input(f"{' ' * 14}<?->> ").lower()
+    match user_input:
+        case "key binds":
+            key_bind_menu()
         case "load save":
             load_logic(BE.load_save())
         case "save game":
@@ -185,9 +222,23 @@ def settings_menu() -> None:
             game_menu()
             return
         case _:
-            print(f"\n{' ' * 16}{x} is not a valid option!")
+            print(f"\n{' ' * 16}{user_input} is not a valid option!")
             input(f"{' ' * 16}Press enter to continue...")
     settings_menu()
+
+
+def process_character_buy(menu: int, price: int, name: str) -> None:
+    if BE.bought_characters[menu] is True:
+        print(f"\n{' ' * 16}Character is already bought!")
+        input(f"{' ' * 16}Press enter to continue...")
+    elif BE.badges < price:
+        print(f"\n{' ' * 16}You don't have enough badges!")
+        input(f"{' ' * 16}Press enter to continue...")
+    else:
+        BE.badges -= price
+        BE.bought_characters[menu] = True
+        print(f"\n{' ' * 16}Successfully bought {name}!")
+        input(f"{' ' * 16}Press enter to continue...")
 
 
 def character_select_menu(cur_menu: int = 0) -> None:
@@ -204,30 +255,16 @@ def character_select_menu(cur_menu: int = 0) -> None:
     price = character.price
     name = character.name
     G.menu_scroll(S.fetch_character_menu(character_list[cur_menu]))
-    x = input(f"{' ' * 14}<?->> ").lower()
-    match x:
+    USER_INPUT = input(f"{' ' * 14}<?->> ").lower()
+    match USER_INPUT:
         case "right":
             cur_menu += 1
-            if cur_menu > 3:
-                cur_menu = 0
             character_select_menu(cur_menu)
         case "left":
             cur_menu -= 1
-            if cur_menu < 0:
-                cur_menu = 3
             character_select_menu(cur_menu)
         case "buy":
-            if BE.bought_characters[cur_menu] is True:
-                print(f"\n{' ' * 16}Character is already bought!")
-                input(f"{' ' * 16}Press enter to continue...")
-            elif BE.badges < price:
-                print(f"\n{' ' * 16}You don't have enough badges!")
-                input(f"{' ' * 16}Press enter to continue...")
-            else:
-                BE.badges -= price
-                BE.bought_characters[cur_menu] = True
-                print(f"\n{' ' * 16}Successfully bought {name}!")
-                input(f"{' ' * 16}Press enter to continue...")
+            process_character_buy(cur_menu, price, name)
         case "equip":
             if BE.bought_characters[cur_menu] is False:
                 print(f"\n{' ' * 16}Character hasn't been bought yet!")
@@ -237,7 +274,7 @@ def character_select_menu(cur_menu: int = 0) -> None:
         case "back":
             settings_menu()
         case _:
-            print(f"\n{' ' * 16}{x} is not a valid option!")
+            print(f"\n{' ' * 16}{USER_INPUT} is not a valid option!")
             input(f"{' ' * 16}Press enter to continue...")
 
 
@@ -246,8 +283,8 @@ def game_menu() -> None:
     This is the MAIN game menu
     """
     G.menu_scroll(S.main_menu)
-    x = input(f"\n{' ' * 14}<(->> ").lower()
-    match x:
+    USER_INPUT = input(f"\n{' ' * 14}<(->> ").lower()
+    match USER_INPUT:
         case "start game":
             game_intro()
         case "continue":
@@ -269,7 +306,7 @@ def game_menu() -> None:
         case "exit":
             syxit(0)
         case _:
-            print(f"\n{' ' * 16}{x} is not a valid option!")
+            print(f"\n{' ' * 16}{USER_INPUT} is not a valid option!")
             input(f"{' ' * 16}Press enter to continue...")
     game_menu()
 

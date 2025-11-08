@@ -45,7 +45,7 @@ DONT_EAT: BEC.Task = BEC.Task(
         "You must Resist the temptation.",
         "Do not eat the animals.",
     ],
-    guide=["Go to the plains.", "There are animalss there.", "Don't eat them."],
+    guide=["Go to the plains.", "There are animals there.", "Don't eat them."],
     prize=3,
     location=[2, 1],
     drain=[3, 6],
@@ -56,7 +56,7 @@ DONT_EAT: BEC.Task = BEC.Task(
 SACRIFICE: BEC.Task = BEC.Task(
     name="Sacrifice",
     dialogue=["Give me goats.", "Their blood, my creation."],
-    guide=["Go to the cliff.", "Bring me a goat.", "Sacrfice it."],
+    guide=["Go to the cliff.", "Bring me a goat.", "Sacrifice it."],
     prize=6,
     location=[3, 0],
     drain=[0, 4],
@@ -65,7 +65,7 @@ SACRIFICE: BEC.Task = BEC.Task(
 BAPTISM: BEC.Task = BEC.Task(
     name="Baptism",
     dialogue=["You must be cleansed.", "Baptism is the way."],
-    guide=["Go to the lake.", "Baptise yourself."],
+    guide=["Go to the lake.", "Baptize yourself."],
     prize=2,
     location=[1, 1],
     drain=[0, 6],
@@ -129,7 +129,7 @@ GOAT_ENEMY: BEC.Animal = BEC.Animal(
         name="Instincts.",
         moves=[
             BEC.Move("Kick", 0, 6, 1),
-            BEC.Move("Preperation", 1, 6, 0),
+            BEC.Move("Preparation", 1, 6, 0),
             BEC.Move("Horn Ram", 0, 16, 3),
         ],
     ),
@@ -218,25 +218,34 @@ FALLEN_STATS: BEC.Character = BEC.Character(
 # False = Not Bought | True = Bought
 bought_characters: list = [True, False, False, False]
 
+# Out-game Variables
 name: str = "Player"
 badges: int = 0
 cur_stats: BEC.Character = NEWBIE_STATS
 
+# Menu Variables
 has_loaded: bool = False
 
-cur_location: list = [0, 0]
-cur_animal: BEC.Animal = None
-cur_task: BEC.Task = None
-
+# Time Variables
 game_time: int = 0
 cur_time: int = 0
 what_time: str = "Day"
 can_sleep: bool = False
 
+# Task Variables
 done_task: bool = False
 heard_task: bool = False
+
+# Extra Settings
+animation_speed: float = 3.5
+do_move_anim: bool = True
+
+# Misc.
+cur_location: list = [0, 0]
+cur_animal: BEC.Animal = None
+cur_task: BEC.Task = None
 animal_exists: bool = False
-wait_cooldown: int = 0
+wait_cool_down: int = 0
 
 deaths: int = 0
 
@@ -245,7 +254,7 @@ LOCATION_NAMES: list = [
     ["The Forest Entrance.", "My Campsite.", "The Spawn.", "A Cliff."],
     ["His Altar.", "A Small Lake.", "The Plains.", "The Waterfall."],
 ]
-keybind_list: list = [
+key_bind_list: list = [
     ["move", "acts", "task", "wait", "bag"],
     ["left", "right", "up", "down"],
     ["ask", "sleep", "check", "get"],
@@ -288,7 +297,7 @@ def write_log(message: str = "(?) Log called but no messages") -> None:
 
 def check_death() -> int:
     """
-    Checks for death to prevent repitition in __main__.py
+    Checks for death to prevent repetition in __main__.py
 
     If current_health is below 1
     it returns 1 as in ACTUAL DEATH
@@ -356,7 +365,7 @@ def move_game_time(
     The main function to move game time
 
     This returns a list of structure:
-    [cur_time, what_time, wait_cooldown]
+    [cur_time, what_time, wait_cool_down]
 
     If parameter amount is 0
     It will move time back 4 hours to emulate sleep
@@ -409,7 +418,7 @@ def save_game() -> None:
 
     It saves all essential backend variables
     In a structure that follows below:
-    keybinds...
+    key binds...
     bought characters...
     badges
     cur stats index
@@ -437,9 +446,9 @@ def save_game() -> None:
     try:
         write_log("(Attempt) Saving Game...")
         with open("backend/saveFile/__save__.txt", "w", encoding="utf-8") as file:
-            for x in enumerate(keybind_list):
-                for y in enumerate(keybind_list[x]):
-                    file.write(f"{keybind_list[x][y]}\n")
+            for x in enumerate(key_bind_list):
+                for y in enumerate(key_bind_list[x]):
+                    file.write(f"{key_bind_list[x][y]}\n")
             for x in bought_characters:
                 file.write(f"{x}\n")
             file.write(f"{name}\n")
@@ -482,8 +491,8 @@ def load_save() -> dict:
 
     It will return a dictionary.
     It's keywords are:
-    keybinds, bought, badges, location, curtask, gametime,
-    donetask, animalexists, deaths
+    key_binds, bought, badges, location, cur_task, game_time,
+    done_task, animal_exists, deaths
 
     This saves a global statement
     and it is to be unpacked in __main__.py
@@ -491,15 +500,15 @@ def load_save() -> dict:
     try:
         write_log("(Attempt) Loading Game...")
         save_var = {
-            "keybinds": [],
+            "key_binds": [],
             "bought": [],
             "name": "",
             "badges": 0,
             "location": [],
-            "curtask": False,
-            "gametime": 0,
-            "donetask": False,
-            "animalexists": False,
+            "cur_task": False,
+            "game_time": 0,
+            "done_task": False,
+            "animal_exists": False,
             "deaths": 0,
         }
         i = 0
@@ -508,10 +517,10 @@ def load_save() -> dict:
             if len(lines) < 29:
                 write_log("(Not Fatal) Save File is empty or corrupted, skipping load")
                 return {}
-            for x in enumerate(keybind_list):
-                save_var["keybinds"].append([])
-                for y in enumerate(keybind_list[x]):
-                    save_var["keybinds"][x][y] = lines[i]
+            for x in enumerate(key_bind_list):
+                save_var["key_binds"].append([])
+                for y in enumerate(key_bind_list[x]):
+                    save_var["key_binds"][x][y] = lines[i]
                     i += 1
             for z in range(4):
                 save_var["bought"][z] = lines[z + 14].strip() == "True"
@@ -521,10 +530,10 @@ def load_save() -> dict:
             cur_stats.stats.curHealth = int(lines[21].strip())
             cur_stats.stats.curStamina = int(lines[22].strip())
             save_var["location"] = [int(lines[23].strip()), int(lines[24].strip())]
-            save_var["curtask"] = lines[25].strip()
-            save_var["gametime"] = int(lines[26].strip())
-            save_var["donetask"] = lines[27].strip() == "True"
-            save_var["animalexists"] = lines[28].strip() == "True"
+            save_var["cur_task"] = lines[25].strip()
+            save_var["game_time"] = int(lines[26].strip())
+            save_var["done_task"] = lines[27].strip() == "True"
+            save_var["animal_exists"] = lines[28].strip() == "True"
             save_var["deaths"] = int(lines[29].strip())
         return save_var
     except FileNotFoundError:

@@ -1,4 +1,4 @@
-"""The GUI Module ccontaining all the GUI Logic and functions"""
+"""The GUI Module containing all the GUI Logic and functions"""
 
 # Built-in modules
 from time import sleep
@@ -9,8 +9,6 @@ from os import system, name
 from gui.__sprites__ import location_sprites, print_sky
 import backend.__backend__ as BE
 
-animation_speed: int = 3.5
-cur_menu: int = 0
 
 logo: str = f"""
 {" " * 16}    '.~~-go-2-~~-~~-~~-~~-~~.'
@@ -24,7 +22,7 @@ logo: str = f"""
 def menu_scroll(menu: str) -> None:
     """
     Prints the menu with a scroll wrapper
-    To reduce any repitition in the sprites
+    To reduce any repetition in the sprites
     """
     clear()
     print(logo)
@@ -61,12 +59,12 @@ def display_stats() -> None:
     a print() statement, it will print it on it's own.
     """
     stats = BE.cur_stats.stats
-    chealth = stats.cur_health
-    mhealth = stats.max_health
-    cstamina = stats.cur_stamina
-    mstamina = stats.max_stamina
-    health_amount = int(chealth // (mhealth / 10))
-    stamina_amount = int(cstamina // (mstamina / 10))
+    cur_health = stats.cur_health
+    max_health = stats.max_health
+    cur_stamina = stats.cur_stamina
+    max_stamina = stats.max_stamina
+    health_amount = int(cur_health // (max_health / 10))
+    stamina_amount = int(cur_stamina // (max_stamina / 10))
     health = "#" * health_amount
     no_health = "-" * (10 - health_amount)
     stamina = "#" * stamina_amount
@@ -74,8 +72,8 @@ def display_stats() -> None:
     head = BE.cur_stats.head
     body = BE.cur_stats.body
     output = f"""
-.'.{head}.| Health  : {chealth} / {mhealth} | Hunger : |  //_- go 2 JAMBOREE - '.
-|::{body}.| Stamina : {cstamina} / {mstamina} | ## / ##  | /_ / A game made by:   |
+.'.{head}.| Health  : {cur_health} / {max_health} | Hunger : |  //_- go 2 JAMBOREE - '.
+|::{body}.| Stamina : {cur_stamina} / {max_stamina} | ## / ##  | /_ / A game made by:   |
 '.==HP==[{health}{no_health}]=SP==[{stamina}{no_stamina}]=|  // -> ELECTRICSPLASH .'
 """
     print(output)
@@ -104,7 +102,7 @@ def print_animation(message: str = "", centralize: bool = True) -> None:
     Prints a message with a typing animation effect.
     Just a simple animation <3
     """
-    delay_amount = animation_speed / (len(list(message)) * len(list(message)))
+    delay_amount = BE.animation_speed / (len(list(message)) * len(list(message)))
     delay = delay_amount
     if centralize is True:
         print(" " * ((64 - len(list(message))) // 2), end="")
@@ -148,7 +146,7 @@ def move_animation(speed: int = 1, debug: bool = False) -> None:
     head = BE.cur_stats.head
     body = BE.cur_stats.body
     dots = 0
-    delay = (animation_speed / 15) / speed
+    delay = (BE.animation_speed / 15) / speed
     if debug is True:
         BE.write_log("(Not Fatal) Move animation function on debug mode!")
     for i in range(15):
@@ -212,8 +210,8 @@ def fetch_random_dialogue(dialogue_type: str) -> str:
         dialogue = ["Ah... Home sweet home...", "Nothing beats a good night's rest"]
     if dialogue_type == "wait":
         dialogue = [
-            "Hmmmmmm... Zen...",
+            "Hmmm... Zen...",
             "Nature... Serenity...",
-            "Sin... No... Nggrrhh...",
+            "Sin... No... Grr...",
         ]
     return dialogue[randint(0, len(dialogue) - 1)]
