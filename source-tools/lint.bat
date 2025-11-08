@@ -1,6 +1,6 @@
 echo off
 echo Using Ruff to lint...
-cd src
+cd g2J-RC
 ruff check
 ruff clean
 cd ..

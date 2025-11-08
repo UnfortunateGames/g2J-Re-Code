@@ -45,6 +45,8 @@ For **Windows**:
 pip install pyinstaller ruff
 ```
 
+> You should be ready to go ahead and run the scripts I made!
+
 For **Linux** and **MacOS**:
 
 > These systems differ slightly in how they manage Python

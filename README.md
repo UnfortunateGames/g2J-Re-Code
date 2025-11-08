@@ -23,7 +23,10 @@ The last version will be archived.
 
 ### Requirements
 
-- Python (Duh)
+- Python > v3.13
+
+> Based on when I updated it.
+> This might get outdated fast, but i doubt it.
 
 ### For Developers
 
@@ -52,7 +55,18 @@ Set directory to the repository:
 cd g2J-Re-Code
 ```
 
-Then run the *shell* file:
+> For Windows
+
+No need for any precautions or errors here.
+Just simply run the batch script.
+
+```sh
+./rungame.bat
+```
+
+> For Linux Systems / MacOS Systems
+
+Run the *shell* file:
 
 ```sh
 ./rungame.sh
@@ -98,13 +112,24 @@ Now for redistrubution compile it using the source tool "compile".
 This will compile a single executable on the out directory.
 Though you need PyInstaller for this.
 
+> For Windows
+
 ```sh
-./source-tool/compile
+./source-tools/compile.bat
+```
+
+> For Linux Systems / MacOS Systems
+
+```sh
+./source-tools/compile.sh
 ```
 
 For instructions on how to install PyInstaller
 Refer to the README of source-tools
 
-Now for reading the Python code? Go ahead to the doc of the repository.
-> [!WARNING]
-> For now just read the docstrings my bad.
+## Modifying the source code
+
+It's your choice! And I don't care what you'd do with it.
+If you can bear my stupidity that is.
+
+It'd be my pleasure to get some requests for some bugs in the game.

@@ -1,5 +1,5 @@
 #!/bin/bash
 echo Removing __save__.txt...
-rm src/backend/saveFile/__save__.txt
-touch src/backend/saveFile/__save__.txt
+rm g2J-RC/backend/saveFile/__save__.txt
+touch g2J-RC/backend/saveFile/__save__.txt
 echo Success!
