@@ -47,7 +47,7 @@ Simply double-click or *"run"* the *runGame.bat* file in the root directory or e
 
 ### Linux / MacOS
 
-Run the .sh file in your terminal, follow these instructions:
+To run the game in your terminal, follow these instructions:
 
 Set directory to the repository:
 
@@ -55,21 +55,10 @@ Set directory to the repository:
 cd g2J-Re-Code
 ```
 
-> For Windows
-
-No need for any precautions or errors here.
-Just simply run the batch script.
+Then run the *shell* file:
 
 ```sh
-./rungame.bat
-```
-
-> For Linux Systems / MacOS Systems
-
-Run the *shell* file:
-
-```sh
-./rungame.sh
+./runGame.sh
 ```
 
 **If it doesn't run**, then run this command on the *runGame* shell file:
