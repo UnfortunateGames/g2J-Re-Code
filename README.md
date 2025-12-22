@@ -14,7 +14,7 @@ A game where ~~God~~ guides you on your way to salvation!
 Do tasks, hunt and eat for food.
 Just don't make ~~God~~ angry!
 
-## ANOUNCEMENTS
+## ANNOUNCEMENTS
 
 This will now be the *official* **go 2 JAMBOREE** code base.
 The last version will be archived.
@@ -33,7 +33,7 @@ The last version will be archived.
 - PyInstaller (To compress it to a directory or .exe file)
 
 > To read the Python code from source, read the doc. (Yes I know it's not implemented in yet)
-> Or if you're a huge chad just read the docstrings instead.
+> Or if you're a huge chad just read the doc strings instead.
 
 *If running from source, please follow the instructions below in each specified platform.*
 
@@ -97,7 +97,7 @@ git clone https://github.com/UnfortunateGames/g2J-Re-Code.git
 
 And just set your directory to the repo
 
-Now for redistrubution compile it using the source tool "compile".
+Now for redistribution compile it using the source tool "compile".
 This will compile a single executable on the out directory.
 Though you need PyInstaller for this.
 
@@ -119,6 +119,6 @@ Refer to the README of source-tools
 ## Modifying the source code
 
 It's your choice! And I don't care what you'd do with it.
-If you can bear my stupidity that is.
+If you can bear my stupid code that is.
 
 It'd be my pleasure to get some requests for some bugs in the game.
